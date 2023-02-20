@@ -1,0 +1,5 @@
+Images of task instructions, were saved.
+Repository name was changed to "list_app" from "final_case".
+"list_app" Visual Studio solution with "list_api" project which is project was empty empty ASP.NET Core Web API on .NET 7.0, was created.
+Configuring HTTPS option was unchecked.
+Reduntant files removed from template project.
