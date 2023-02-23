@@ -1,0 +1,37 @@
+Any evidence about working EF Core with NoSQL, could not be found on internet.
+A video [1] about NoSQL, was watched.
+5 webpages [2] [3] [4] [5] [6] about MongoDB and PostgreSQL, were examined.
+A webpage [7] about NoSQL, was read.
+4 webpages [8] [9] [10] [11] about Redis, were examined.
+A webpage [12] about EF, was examined.
+2 webpages [13] [14] about RabbitMQ, were examined.
+An attempt was started to implement Repository Pattern, model concept and token validation, by examining 2 projects [15] [16].
+3 webpages [17] [18] [19] about FluentValidation, were examined.
+Because of CS0618 warning, "AddFluentValidationAutoValidation" extension instead of "AddFluentValidation" extension.
+After watching a video, classes of token operations, were moved into "Security" folder.
+A webpage [21] about GUID validation, was read.
+Pattern parameter of "Regex.IsMatch" method, was examined on a document [22].
+Some examples of Fluent Validation with Regex, were examined on a webpage [23].
+[1] BilgisayarKavramlari, https://youtu.be/V29-GMYRYNs, 21 October 2015.
+[2] https://www.educba.com/entity-framework-with-mongodb/
+[3] SQL Server Eğitimleri, https://youtu.be/sDLNJ2RPoCI, 17 May 2019.
+[4] LindblomDEV, https://youtu.be/_lLqt5exlMs, 12 September 2021.
+[5] https://stackoverflow.com/questions/47942913/is-postgresql-a-nosql-database
+[6] Walker Rowe, https://www.bmc.com/blogs/mongodb-vs-postgresql, July 16, 2020.
+[7] Balvinder Dang, https://datavid.com/blog/best-nosql-databases/, January 17, 2022.
+[8] abhisheikh parihar, https://youtu.be/VeZythWi34E, 25 August 2018.
+[9] Tech Buddy, https://youtu.be/AyCTsDRZa2k, 27 June 2021.
+[10] Mohamad Lawand, https://youtu.be/6HZVu3kGOrg, + October 2022.
+[11] kablosuzkedi, https://youtu.be/JLS9gg-oJPQ, 1 May 2020.
+[12] Yusuf Sezer, https://www.yusufsezer.com.tr/entity-framework-core/.
+[13] Taner Saydam, https://youtu.be/UI5jFgr2vNw, 9 November 2022.
+[14] Tech Buddy, https://youtu.be/LuU2N6jmXiI, 13 June 2021.
+[15] bugrasarikaya, https://github.com/bugrasarikaya/patika_tasks/tree/main/net_practicum/task_2, 5 February 2023.
+[16] bugrasarikaya, hhttps://github.com/bugrasarikaya/patika_tasks/tree/main/net_core/task_7/game_store, 19 February 2023.
+[17] Gençay Yıldız, https://youtu.be/UIHQf3ICKzQ, 2 January 2021.
+[18] https://stackoverflow.com/questions/73402059/asp-net-core-web-api-fluentvalidationmvcextensions-addfluentvalidationimvcbui
+[19] Christian Schou, https://blog.christian-schou.dk/how-to-use-fluentvalidation-in-asp-net-core6/, Feb 18, 2022.
+[20] Taner Saydam, https://youtu.be/lCcz9N6-B7Q, 12 November 2022.
+[21] prashant_srivastava, https://www.geeksforgeeks.org/how-to-validate-guid-globally-unique-identifier-using-regular-expression/, 19 Dec, 2022.
+[22] https://learn.microsoft.com/en-us/dotnet/api/system.text.regularexpressions.regex.ismatch?view=net-7.0
+[23] JeremySkinner, https://github.com/FluentValidation/FluentValidation/blob/main/src/FluentValidation.Tests/RegularExpressionValidatorTests.cs, Aug 6, 2022.
