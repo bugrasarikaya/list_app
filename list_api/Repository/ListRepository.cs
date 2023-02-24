@@ -4,24 +4,23 @@ using list_api.Data;
 namespace list_api.Repository {
 	public class ListRepository : IListRepository {
 		private readonly IListApiDbContext context;
-		private List? list { get; set; }
 		public ListRepository(IListApiDbContext context) { // Constructing.
 			this.context = context;
 		}
 		public List Create(List list) { // Creating a list.
-			list = new List() { Name = list.Name, Description = list.Description, CategoryID = list.CategoryID, UserID = list.UserID, DateTime = list.DateTime, Cost = list.Cost };
+			List? list_created = new List() { Name = list.Name, Description = list.Description, IDCategory = list.IDCategory, IDUser = list.IDUser, DateTime = list.DateTime, Cost = list.Cost };
 			if (context.Lists.Any(l => l.Name == list.Name)) throw new InvalidOperationException("List already exists.");
-			context.Lists.Add(list);
+			context.Lists.Add(list_created);
 			context.SaveChanges();
-			return list;
+			return list_created;
 		}
 		public List? Delete(int id) { // Deleting a list.
-			list = context.Lists.FirstOrDefault(l => l.ID == id);
-			if (list != null) {
-				context.Lists.Remove(list);
+			List? list_deleted = context.Lists.FirstOrDefault(l => l.ID == id);
+			if (list_deleted != null) {
+				context.Lists.Remove(list_deleted);
 				context.SaveChanges();
 			}
-			return list;
+			return list_deleted;
 		}
 		public List? Get(int id) { // Getting a list.
 			return context.Lists.FirstOrDefault(l => l.ID == id);
@@ -30,17 +29,16 @@ namespace list_api.Repository {
 			return context.Lists.ToList();
 		}
 		public List? Update(int id, List list) { // Updating a list.
-			this.list = context.Lists.FirstOrDefault(l => l.ID == id);
-			if (this.list != null) {
-				this.list.Name = list.Name;
-				this.list.Description = list.Description;
-				this.list.CategoryID = list.CategoryID;
-				this.list.UserID = list.UserID;
-				this.list.DateTime = list.DateTime;
-				this.list.Cost = list.Cost;
+			List? list_updated = context.Lists.FirstOrDefault(l => l.ID == id);
+			if (list_updated != null) {
+				list_updated.IDCategory = list.IDCategory;
+				list_updated.IDUser = list.IDUser;
+				if (context.Lists.Any(l => l.Name == list.Name)) throw new InvalidOperationException("List already exists.");
+				list_updated.Name = list.Name;
+				list_updated.Description = list.Description;
 				context.SaveChanges();
 			}
-			return list;
+			return list_updated;
 		}
 	}
 }

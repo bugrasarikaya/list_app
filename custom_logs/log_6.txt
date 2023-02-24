@@ -1,0 +1,4 @@
+By examining two sources [1] [2], a generic method whose name is "Supply", was written for checking existence of a record.
+Product list system was added.
+[1] https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/generic-methods, 01/25/2022.
+[2] on Skeet, https://stackoverflow.com/questions/9808035/how-do-i-make-the-return-type-of-a-method-generic, Mar 21, 2012 at 15:46.

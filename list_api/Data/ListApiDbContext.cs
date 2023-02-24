@@ -4,6 +4,7 @@ namespace list_api.Data {
 	public class ListApiDbContext : DbContext, IListApiDbContext {
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<List> Lists { get; set; }
+		public DbSet<ListProduct> ListProducts { get; set; }
 		public DbSet<Product> Products { get; set; }
 		public DbSet<User> Users { get; set; }
 		public override int SaveChanges() {

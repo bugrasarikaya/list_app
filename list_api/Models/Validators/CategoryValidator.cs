@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using list_api.Models.ViewModels;
 namespace list_api.Models.Validators {
 	public class CategoryValidator : AbstractValidator<Category> {
 		public CategoryValidator() { // Constructing.

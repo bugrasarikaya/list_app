@@ -4,24 +4,23 @@ using list_api.Data;
 namespace list_api.Repository {
 	public class ProductRepository : IProductRepository {
 		private readonly IListApiDbContext context;
-		private Product? product { get; set; }
 		public ProductRepository(IListApiDbContext context) { // Constructing.
 			this.context = context;
 		}
 		public Product Create(Product product) { // Creating a product.
-			product = new Product() { Name = product.Name, Description = product.Description, CategoryID = product.CategoryID, Price = product.Price };
+			Product? product_created = new Product() { Name = product.Name, Description = product.Description, IDCategory = product.IDCategory, Price = product.Price };
 			if (context.Products.Any(p => p.Name == product.Name)) throw new InvalidOperationException("Product already exists.");
-			context.Products.Add(product);
+			context.Products.Add(product_created);
 			context.SaveChanges();
-			return product;
+			return product_created;
 		}
 		public Product? Delete(int id) { // Deleting a product.
-			product = context.Products.FirstOrDefault(p => p.ID == id);
-			if (product != null) {
-				context.Products.Remove(product);
+			Product? product_deleted = context.Products.FirstOrDefault(p => p.ID == id);
+			if (product_deleted != null) {
+				context.Products.Remove(product_deleted);
 				context.SaveChanges();
 			}
-			return product;
+			return product_deleted;
 		}
 		public Product? Get(int id) { // Getting a product.
 			return context.Products.FirstOrDefault(p => p.ID == id);
@@ -30,15 +29,16 @@ namespace list_api.Repository {
 			return context.Products.ToList();
 		}
 		public Product? Update(int id, Product product) { // Updating a product.
-			this.product = context.Products.FirstOrDefault(p => p.ID == id);
-			if (this.product != null) {
-				this.product.Name = product.Name;
-				this.product.Description = product.Description;
-				this.product.CategoryID = product.CategoryID;
-				this.product.Price = product.Price;
+			Product? product_updated = context.Products.FirstOrDefault(p => p.ID == id);
+			if (product_updated != null) {
+				if (context.Products.Any(p => p.Name == product.Name)) throw new InvalidOperationException("Product already exists.");
+				product_updated.Name = product.Name;
+				product_updated.Description = product.Description;
+				product_updated.IDCategory = product.IDCategory;
+				product_updated.Price = product.Price;
 				context.SaveChanges();
 			}
-			return product;
+			return product_updated;
 		}
 	}
 }

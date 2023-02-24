@@ -6,29 +6,28 @@ namespace list_api.Controllers {
 	[Route("api[controller]")]
 	public class ListController : ControllerBase {
 		private readonly IListRepository list_repository;
-		private List? list { get; set; }
 		public ListController(IListRepository list_repository) { // Constructing.
 			this.list_repository = list_repository;
 		}
 		[HttpGet]
 		public IActionResult Create([FromBody] List list) { // Responding with a created list after creating.
 			if (ModelState.IsValid) {
-				this.list = list_repository.Create(list);
-				return Created("api/List/" + list.ID, list);
+				List? list_created = list_repository.Create(list);
+				return Created("api/List/" + list_created.ID, list_created);
 			} else return BadRequest(ModelState);
 		}
 		[HttpDelete("id:int")]
 		public IActionResult Delete(int id) { // Responding with no content after deleting.
 			if (ModelState.IsValid) {
-				list = list_repository.Delete(id);
-				if (list != null) return NoContent();
+				List? list_deleted = list_repository.Delete(id);
+				if (list_deleted != null) return NoContent();
 				else return NotFound();
 			} else return BadRequest(ModelState);
 		}
 		[HttpGet("id:int")]
 		public IActionResult Get(int id) { // Responding with a list after getting.
 			if (ModelState.IsValid) {
-				list = list_repository.Get(id);
+				List? list = list_repository.Get(id);
 				if (list != null) return Ok(list);
 				else return NotFound();
 			} else return BadRequest(ModelState);
@@ -38,10 +37,10 @@ namespace list_api.Controllers {
 			return Ok(list_repository.List());
 		}
 		[HttpPut]
-		public IActionResult Update(int id, [FromBody] List list) { // Responding with an updated list after updating.
+		public IActionResult Update([FromQuery] int id, [FromBody] List list) { // Responding with an updated list after updating.
 			if (ModelState.IsValid) {
-				this.list = list_repository.Update(id, list);
-				if (this.list != null) return Ok(list);
+				List? list_updated = list_repository.Update(id, list);
+				if (list_updated != null) return Ok(list_updated);
 				else return NotFound();
 			} else return BadRequest(ModelState);
 		}
