@@ -1,0 +1,3 @@
+Cateory, list, product and user systems were added by benefiting two sources [1] [2].
+[1] bugrasarikaya, https://github.com/bugrasarikaya/patika_tasks/tree/main/net_practicum/task_2, 5 February 2023.
+[2] bugrasarikaya, hhttps://github.com/bugrasarikaya/patika_tasks/tree/main/net_core/task_7/game_store, 19 February 2023.

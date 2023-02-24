@@ -11,11 +11,11 @@ namespace list_api.Repository {
 		private readonly IListApiDbContext context;
 		private Token? token { get; set; }
 		private User? user { get; set; }
-		public TokenRepository(IConfiguration configuration, ListApiDbContext context) {
+		public TokenRepository(IConfiguration configuration, IListApiDbContext context) { // Constructing.
 			this.configuration = configuration;
 			this.context = context;
 		}
-		public ActionResult<Token>? Create(UserViewModel user_view_model) { // Creating a token for login.
+		public Token? Create(UserViewModel user_view_model) { // Creating a token for login.
 			user = context.Users.SingleOrDefault(u => u.Name == user_view_model.Name && u.Password == user_view_model.Password);
 			if (user != null) {
 				token = new TokenHandler(configuration).CreateAccsessToken(user);
@@ -25,7 +25,7 @@ namespace list_api.Repository {
 				return token;
 			} else return null;
 		}
-		public ActionResult<Token>? Refresh(string refresh_token) { // Refreshing a token.
+		public Token? Refresh(string refresh_token) { // Refreshing a token.
 			user = context.Users.SingleOrDefault(u => u.RefreshToken == refresh_token && u.RefreshTokenExpireDate > DateTime.Now);
 			if (user != null) {
 				token = new TokenHandler(configuration).CreateAccsessToken(user);

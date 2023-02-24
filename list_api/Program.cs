@@ -6,7 +6,7 @@ using System.Text;
 using System.Reflection;
 using FluentValidation;
 namespace list_api {
-	public class Program {
+	public class Program { // Constructing.
 		public static void Main(string[] args) {
 			WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 			ConfigurationManager configuration = builder.Configuration;
@@ -36,9 +36,9 @@ namespace list_api {
 					ValidateAudience = false,
 					ValidateIssuer = false,
 					ValidateLifetime = true,
-					ValidIssuer = configuration["Token: Issuer"],
-					ValidAudience = configuration["Token: Audience"],
-					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token: SecurityKey"]!)),
+					ValidIssuer = configuration["Token:Issuer"],
+					ValidAudience = configuration["Token:Audience"],
+					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:SecurityKey"]!)),
 					ClockSkew = TimeSpan.Zero
 				};
 			});
