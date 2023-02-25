@@ -6,6 +6,7 @@ namespace list_api.Models.Validators {
 			RuleFor(u => u.Name).NotNull().MinimumLength(8).WithMessage("Username must have at least 8 characters.");
 			RuleFor(u => u.Password).NotNull().WithMessage("Password cannot be empty.");
 			RuleFor(u => u.Password).NotNull().MinimumLength(8).WithMessage("Password must have at least 8 characters.");
+			RuleFor(u => u.Role).Must(r => r == "Admin" || r == "User").WithMessage("Username must have at least 8 characters.");
 		}
 	}
 }

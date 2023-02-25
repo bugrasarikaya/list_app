@@ -8,7 +8,7 @@ A webpage [12] about EF, was examined.
 An attempt was started to implement Repository Pattern, model concept and token validation, by examining 2 projects [15] [16].
 3 webpages [17] [18] [19] about FluentValidation, were examined.
 Because of CS0618 warning, "AddFluentValidationAutoValidation" extension instead of "AddFluentValidation" extension.
-After watching a video, classes of token operations, were moved into "Security" folder.
+After watching a video [20], classes of token operations, were moved into "Security" folder.
 A webpage [21] about GUID validation, was read.
 Pattern parameter of "Regex.IsMatch" method, was examined on a document [22].
 Some examples of Fluent Validation with Regex, were examined on a webpage [23].

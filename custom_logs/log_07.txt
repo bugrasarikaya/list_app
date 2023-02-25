@@ -1,0 +1,26 @@
+By examining a project [1], changings in "appsettings.json" and "Program.cs" were applied for injecting database and repository pattern.
+Thanks to code of "Program.cs" from a project [2], an error about injecting database interface, was fixed.
+Working on "Scoped", "Transient" and "Singleton" issues, was delayed.
+A routing statement from a webpage [3], was applied for using multiple parameters.
+It was detected that Swagger did not ignore some redundant model properties and some fixing methods were found but resolving this issue, was delayed.
+2 videos [4] [5] about role based authorization with JWT, were watched.
+By benefiting watched videos [4] [5] and a code [6] of watched video [5], a claim system was added into token handler.
+"Must" method of fluent validation, was found in a webpage [7] and it was used for user role.
+"Authorize" attributes with roles, were added by benefiting a document [8].
+By benefiting 5 sources [9] [10] [11] [12] [13], a system was written to check user role and supply user ID.
+Checking user role feature was removed and system was moved into created controller which is accessible only with "User" role.
+A method from a webpage [14], was utilized for supplying records whose IDs exist in a ID list.
+[1] bugrasarikaya, https://github.com/bugrasarikaya/patika_tasks/tree/main/net_practicum/task_2, 5 February 2023.
+[2] bugrasarikaya, hhttps://github.com/bugrasarikaya/patika_tasks/tree/main/net_core/task_7/game_store, 19 February 2023.
+[3] JotaBe, https://stackoverflow.com/questions/30356109/attributed-routing-with-multiple-parameters-in-web-api-2, May 21, 2015 at 9:03.
+[4] Israel Quiroz, https://youtu.be/bd_KXtm7p1c, 11 Aug 2022.
+[5] Patrick God, https://youtu.be/TDY_DtTEkes, 14 December 2021.
+[6] patrickgod, https://github.com/patrickgod/JwtWebApiTutorial/blob/master/JwtWebApiTutorial/Controllers/AuthController.cs, May 10, 2022.
+[7] Thomas Ayoub, https://stackoverflow.com/questions/33959323/checking-if-parameter-is-one-of-3-values-with-fluent-validation, Aug 17, 2022 at 6:39.
+[8] https://learn.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-7.0, 07/27/2022.
+[9] CodingMytra, https://stackoverflow.com/questions/72867849/how-to-check-that-user-is-in-a-role-programmatically-in-asp-net-core, Jul 5, 2022 at 12:31.
+[10] Hesam Faridmehr, https://stackoverflow.com/questions/50580232/get-userid-from-jwt-on-all-controller-methods, May 29, 2018 at 9:26.
+[11] hutchonoid, https://stackoverflow.com/questions/22246538/access-claim-values-in-controller-in-mvc-5, Nov 5, 2014 at 7:03.
+[12] Soren, Hamza Khanzada, https://stackoverflow.com/questions/30701006/how-to-get-the-current-logged-in-user-id-in-asp-net-core, (answered) Aug 9, 2016 at 9:50, (edited) Nov 13, 2019 at 18:53.
+[13] EBarr, Community (Bot) ,https://stackoverflow.com/questions/5814017/what-is-the-purpose-of-nameidentifier-claim, (answered) Jun 21, 2012 at 21:45, (edited) May 23, 2017 at 12:34.
+[14] michael yin, https://stackoverflow.com/questions/54241594/linq-query-where-id-does-not-exist-as-a-property-in-a-list-of-objects, Jan 18, 2019 at 4:04.

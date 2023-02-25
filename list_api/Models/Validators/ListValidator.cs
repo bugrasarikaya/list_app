@@ -5,7 +5,6 @@ namespace list_api.Models.Validators {
 			RuleFor(l => l.IDCategory).GreaterThan(0).WithMessage("Category ID must be greater than 0.");
 			RuleFor(l => l.IDUser).GreaterThan(0).WithMessage("User ID must be greater than 0.");
 			RuleFor(l => l.Name).NotNull().NotEmpty().WithMessage("Name cannot be empty.");
-			RuleFor(l => l.Name).NotNull().MinimumLength(8).WithMessage("Name must have at least 8 characters.");
 			RuleFor(l => l.Description).NotNull().NotEmpty().WithMessage("Name cannot be empty.");
 		}
 	}

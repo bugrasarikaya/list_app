@@ -8,7 +8,7 @@ namespace list_api.Repository {
 			this.context = context;
 		}
 		public List Create(List list) { // Creating a list.
-			List? list_created = new List() { Name = list.Name, Description = list.Description, IDCategory = list.IDCategory, IDUser = list.IDUser, DateTime = list.DateTime, Cost = list.Cost };
+			List? list_created = new List() { Name = list.Name, Description = list.Description, IDCategory = list.IDCategory, IDUser = list.IDUser };
 			if (context.Lists.Any(l => l.Name == list.Name)) throw new InvalidOperationException("List already exists.");
 			context.Lists.Add(list_created);
 			context.SaveChanges();

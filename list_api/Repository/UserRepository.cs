@@ -8,7 +8,7 @@ namespace list_api.Repository {
 			this.context = context;
 		}
 		public User Create(User user) { // Creating a user.
-			User user_created = new User() { Name = user.Name, Password = user.Password };
+			User user_created = new User() { Name = user.Name, Password = user.Password, Role = user.Role };
 			if (context.Users.Any(u => u.Name == user_created.Name)) throw new InvalidOperationException("User already exists.");
 			context.Users.Add(user_created);
 			context.SaveChanges();

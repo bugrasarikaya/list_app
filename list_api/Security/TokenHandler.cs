@@ -2,6 +2,7 @@
 using list_api.Security.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 namespace list_api.Security {
 	public class TokenHandler {
@@ -14,7 +15,7 @@ namespace list_api.Security {
 			SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:SecurityKey"]!));
 			SigningCredentials signing_credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 			token_model.Expiration = DateTime.Now.AddMinutes(15);
-			JwtSecurityToken security_token = new JwtSecurityToken(issuer: configuration["Token:Issuer"], audience: configuration["Token:Audience"], expires: token_model.Expiration, notBefore: DateTime.Now, signingCredentials: signing_credentials);
+			JwtSecurityToken security_token = new JwtSecurityToken(issuer: configuration["Token:Issuer"], audience: configuration["Token:Audience"], claims: new List<Claim> { new Claim(ClaimTypes.NameIdentifier, user.ID.ToString()), new Claim(ClaimTypes.Role, user.Role) }, expires: token_model.Expiration, notBefore: DateTime.Now, signingCredentials: signing_credentials);
 			JwtSecurityTokenHandler token_handler = new JwtSecurityTokenHandler();
 			token_model.AcessToken = token_handler.WriteToken(security_token);
 			token_model.RefreshToken = Guid.NewGuid().ToString();

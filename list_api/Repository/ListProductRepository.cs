@@ -33,13 +33,19 @@ namespace list_api.Repository {
 		public ListProduct? Get(int id_list, int id_product) { // Getting a product from a list.
 			return context.ListProducts.FirstOrDefault(lp => lp.IDList == id_list && lp.IDProduct == id_product);
 		}
-		public ICollection<ListProduct> List() { // Listing all products in all lists.
+		public ICollection<ListProduct> List() { // Listing all list products in all lists.
 			return context.ListProducts.ToList();
 		}
-		public ICollection<ListProduct> List(int id_list) { // Listing all products in a list.
+		public ICollection<ListProduct> List(int id_list) { // Listing all list products in a list.
 			return context.ListProducts.Where(lp => lp.IDList == id_list).ToList();
 		}
-		public ListProduct? Update(int id, ListProduct list_product) { // Updating a product in a list.
+		public ICollection<ListProduct> ListByCategory(int id_category) { // Listing all list products by category in all lists.
+			return context.ListProducts.Where(lp=> context.Products.Any(p => p.IDCategory == lp.IDProduct && p.IDCategory == id_category)).ToList();
+		}
+		public ICollection<ListProduct> ListByCategory(int id_list, int id_category) { // Listing all list products by category in a list.
+			return context.ListProducts.Where(lp => lp.IDList == id_list && context.Products.Any(p => p.IDCategory == lp.IDProduct && p.IDCategory == id_category)).ToList();
+		}
+		public ListProduct? Update(ListProduct list_product) { // Updating a product in a list.
 			List list = Supply<List>(list_product.IDList);
 			Product? product = Supply<Product>(list_product.IDProduct);
 			ListProduct? list_product_updated = context.ListProducts.FirstOrDefault(lp => lp.IDList == list_product.IDList && lp.IDProduct == list_product.IDProduct);

@@ -7,6 +7,7 @@ namespace list_api.Data {
 		public DbSet<ListProduct> ListProducts { get; set; }
 		public DbSet<Product> Products { get; set; }
 		public DbSet<User> Users { get; set; }
+		public ListApiDbContext(DbContextOptions<ListApiDbContext> options) : base(options) { } // Constructing.
 		public override int SaveChanges() {
 			return base.SaveChanges();
 		}

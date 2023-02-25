@@ -28,6 +28,9 @@ namespace list_api.Repository {
 		public ICollection<Product> List() { // Listing all products.
 			return context.Products.ToList();
 		}
+		public ICollection<Product>? List(int id_category) { // Listing all products which have a specific category.
+			return context.Products.Where(p => p.IDCategory == id_category).ToList();
+		}
 		public Product? Update(int id, Product product) { // Updating a product.
 			Product? product_updated = context.Products.FirstOrDefault(p => p.ID == id);
 			if (product_updated != null) {
