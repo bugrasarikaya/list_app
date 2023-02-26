@@ -2,6 +2,7 @@
 using list_api.Repository.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using list_api.Common;
 namespace list_api.Controllers {
 	[ApiController]
 	[Authorize(Roles = "Admin")]
@@ -16,23 +17,27 @@ namespace list_api.Controllers {
 			if (ModelState.IsValid) {
 				Category? category_created = category_repository.Create(category);
 				return Created("api/Category/" + category_created.ID, category_created);
-			} else return BadRequest(ModelState);
+			} else {
+				return BadRequest(string.Join(" ", ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
+			}
 		}
 		[HttpDelete("{id:int}")]
 		public IActionResult Delete(int id) { // Responding with no content after deleting.
-			if (ModelState.IsValid) {
+			Validator id_validator = new Validator(id);
+			if (id_validator.IDValidator()) {
 				Category? category_deleted = category_repository.Delete(id);
 				if (category_deleted != null) return NoContent();
 				else return NotFound();
-			} else return BadRequest(ModelState);
+			} else return BadRequest(string.Join(" ", id_validator.ListMessage));
 		}
 		[HttpGet("{id:int}")]
 		public IActionResult Get(int id) { // Responding with a category after getting.
-			if (ModelState.IsValid) {
+			Validator id_validator = new Validator(id);
+			if (id_validator.IDValidator()) {
 				Category? category = category_repository.Get(id);
 				if (category != null) return Ok(category);
 				else return NotFound();
-			} else return BadRequest(ModelState);
+			} else return BadRequest(string.Join(" ", id_validator.ListMessage));
 		}
 		[HttpGet]
 		public IActionResult List() { // Responding with category list after getting.
@@ -40,11 +45,12 @@ namespace list_api.Controllers {
 		}
 		[HttpPut("{id:int}")]
 		public IActionResult Update(int id, [FromBody] Category category) { // Responding with an updated category after updating.
-			if (ModelState.IsValid) {
+			Validator id_validator = new Validator(id);
+			if (id_validator.IDValidator() || ModelState.IsValid) {
 				Category? category_updated = category_repository.Update(id, category);
 				if (category_updated != null) return Ok(category_updated);
 				else return NotFound();
-			} else return BadRequest(ModelState);
+			} else return BadRequest(string.Join(" ", id_validator.ListMessage) + " " + string.Join(" ", ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
 		}
 	}
 }

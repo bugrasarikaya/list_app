@@ -3,6 +3,7 @@ using list_api.Repository.Interface;
 using list_api.Security.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using list_api.Security;
 namespace list_api.Controllers {
 	[ApiController]
 	[AllowAnonymous]
@@ -19,16 +20,17 @@ namespace list_api.Controllers {
 				if (token != null) return Ok(token);
 				else return NoContent();
 			}
-			return BadRequest(ModelState);
+			return BadRequest(string.Join(" ", ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
 		}
 		[HttpGet("{refresh_token}")]
 		public IActionResult Refresh(string refresh_token) { // Refreshing a token.
-			if (ModelState.IsValid) {
+			SecurityValidator refresh_token_validator = new SecurityValidator(refresh_token);
+			if (refresh_token_validator.RefreshTokenValidator()) {
 				Token? token = token_repository.Refresh(refresh_token);
 				if (token != null) return Ok(token);
 				else return NoContent();
 			}
-			return BadRequest(ModelState);
+			return BadRequest(string.Join(" ", refresh_token_validator.ListMessage));
 		}
 	}
 }

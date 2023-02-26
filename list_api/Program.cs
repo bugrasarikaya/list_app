@@ -15,7 +15,6 @@ namespace list_api {
 			ConfigurationManager configuration = builder.Configuration;
 			builder.Services.AddControllers();
 			builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-			builder.Services.AddScoped<IListProductRepository, ListProductRepository>();
 			builder.Services.AddScoped<IListRepository, ListRepository>();
 			builder.Services.AddScoped<IProductRepository, ProductRepository>();
 			builder.Services.AddScoped<ITokenRepository, TokenRepository>();

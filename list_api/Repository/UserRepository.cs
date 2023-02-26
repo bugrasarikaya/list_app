@@ -1,6 +1,8 @@
 ﻿using list_api.Models;
 using list_api.Repository.Interface;
 using list_api.Data;
+using System.Net;
+using System.Web.Http;
 namespace list_api.Repository {
 	public class UserRepository : IUserRepository {
 		private readonly IListApiDbContext context;
@@ -9,7 +11,7 @@ namespace list_api.Repository {
 		}
 		public User Create(User user) { // Creating a user.
 			User user_created = new User() { Name = user.Name, Password = user.Password, Role = user.Role };
-			if (context.Users.Any(u => u.Name == user_created.Name)) throw new InvalidOperationException("User already exists.");
+			if (context.Users.Any(u => u.Name == user_created.Name)) throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.Conflict) { ReasonPhrase = "User already exists." });
 			context.Users.Add(user_created);
 			context.SaveChanges();
 			return user_created;
@@ -17,7 +19,7 @@ namespace list_api.Repository {
 		public User? Delete(int id) { // Deleting a user.
 			User? user_deleted = context.Users.FirstOrDefault(u => u.ID == id);
 			if (user_deleted != null) {
-				if (context.Lists.Any(l => l.IDUser == id)) throw new InvalidOperationException("User exists in a list.");
+				if (context.Lists.Any(l => l.IDUser == id)) throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.Conflict) { ReasonPhrase = "User exists in a list." });
 				context.Users.Remove(user_deleted);
 				context.SaveChanges();
 			}
@@ -32,7 +34,7 @@ namespace list_api.Repository {
 		public User? Update(int id, User user) { // Updating a user.
 			User? user_updated = context.Users.FirstOrDefault(u => u.ID == id);
 			if (user_updated != null) {
-				if (context.Users.Any(u => u.Name == user.Name)) throw new InvalidOperationException("User already exists.");
+				if (context.Users.Any(u => u.Name == user.Name)) throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.Conflict) { ReasonPhrase = "User already exists." });
 				user_updated.Name = user.Name;
 				user_updated.Password = user.Password;
 				user_updated.Role = user.Role;

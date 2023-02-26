@@ -8,6 +8,7 @@ namespace list_api.Models {
 		public string Name { get; set; } = null!;
 		public string? Description { get; set; }
 		public DateTime DateTime { get; set; } = DateTime.Now;
-		public double Cost { get; set; }
+		public double TotalCost { get; set; }
+		public string Status { get; set; } = "Uncompleted";
 	}
 }
