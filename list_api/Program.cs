@@ -8,6 +8,8 @@ using FluentValidation;
 using list_api.Data;
 using list_api.Repository.Interface;
 using list_api.Repository;
+using list_api.Middlewares;
+using System.Reflection;
 namespace list_api {
 	public class Program { // Constructing.
 		public static void Main(string[] args) {
@@ -17,10 +19,11 @@ namespace list_api {
 			builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 			builder.Services.AddScoped<IListRepository, ListRepository>();
 			builder.Services.AddScoped<IProductRepository, ProductRepository>();
-			builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+			builder.Services.AddScoped<ITokenRepository, AuthRepository>();
 			builder.Services.AddScoped<IUserRepository, UserRepository>();
 			builder.Services.AddScoped<IListApiDbContext>(provider => provider.GetService<ListApiDbContext>()!);
 			builder.Services.AddDbContext<ListApiDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DbConnection")));
+			builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 			builder.Services.AddFluentValidationAutoValidation();
 			builder.Services.AddFluentValidationClientsideAdapters();
 			builder.Services.AddValidatorsFromAssemblyContaining<Program>();
@@ -38,6 +41,8 @@ namespace list_api {
 			app.UseSwaggerUI();
 			app.UseAuthentication();
 			app.UseAuthorization();
+			app.UseMiddleware<ExceptionMiddleware>();
+			app.UseMiddleware<LoggingMiddleware>();
 			app.MapControllers();
 			app.Run();
 		}

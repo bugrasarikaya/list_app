@@ -16,7 +16,7 @@ namespace list_api.Controllers {
 		[HttpPost]
 		public IActionResult Create([FromBody] User user) { // Creating a token for login.
 			if (ModelState.IsValid) {
-				Token? token = token_repository.Create(user);
+				Token? token = token_repository.LogIn(user);
 				if (token != null) return Ok(token);
 				else return NoContent();
 			}

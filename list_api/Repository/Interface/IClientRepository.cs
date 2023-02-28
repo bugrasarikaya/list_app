@@ -1,21 +1,19 @@
 ﻿using list_api.Models;
+using list_api.Models.DTOs;
 namespace list_api.Repository.Interface {
 	public interface IClientRepository {
 		public int IDUser { get; set; }
-		public List CreateList(List list);
-		public List? Deletelist(int id_list);
+		public List CreateList(ListDTO list_dto);
+		public List? DeleteList(int id_list);
 		public ListViewModel? GetList(int id_list);
 		public ICollection<ListViewModel> ListLists();
 		public ICollection<ListViewModel> ListListsByCategory(int id_category);
-		public List UpdateList(int id_list, List list);
-		public List SetCompleted(int id_list);
-		//public ICollection<Product>? ListListProducts(int id_list);
-		public ListViewModel AddProduct(ListProduct list_product);
+		public List UpdateList(int id_list, ListDTO list_dto);
+		public List PatchList(int id_list, ListClientPatchDTO list_client_patch_dto);
+		public ListViewModel AddProduct(ListProductDTO list_product_dto);
 		public ListViewModel? RemoveProduct(int id_list, int id_product);
-		public List Clear(int id_list);
+		public List ClearList(int id_list);
 		public UserViewModel GetUser();
-		public UserViewModel UpdateUser(User user);
-		public T Supply<T>(int id);
-
+		public UserViewModel UpdateUser(UserClientDTO user_client_dto);
 	}
 }

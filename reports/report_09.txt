@@ -1,0 +1,43 @@
+An attemp was started to fix NU1701 warning which is about not fully compatible "Microsoft.AspNet.WebApi.Core" (v5.2.9) NuGet package.
+Info about 418 HTTP status code which is a April Fools' joke, was read on a webpage [1].
+Exception [2] and logging [3] middleware codes of a project, were copied.
+Usages of multiple "catch" statements, were examiend on a document [4].
+After reading a document [5] about custom exception, 2 custom exceptions were written for handling query exceptions.
+Written exceptions were used instead of non-reliable "Microsoft.AspNet.WebApi.Core" (System.Net and System.Web.Http libraries) methods.
+Written exceptions were catched in custom exception middleware.
+In custom exception middleware, "WriteAsync" method was used instead of "StartAsync" method for writing error message after examining a webpage [6].
+Custom log file names were changed to report names.
+For making a RESTful API and fixing Swagger conflict, HTTP Patch method was used instead of HTTP Get method for setting list to "Completed" status.
+Any method for validating JsonPatchDocument by Fluent Validation, could not be found on internet.
+A validation class with Fluent Validation, was written by benefiting 6 webpages [7] [8] [9] [10] [11] [12].
+A new method was wrriten for checking name of record.
+"Status" model was added.
+Commented lines were removed.
+Usage of optional parameters, was examined on 2 webpages [13] [14].
+Supplier and checker methods were moved in another classes in created "Common" folder in "Repository" folder.
+Supplier and checker methods were upgraded.
+Difference between DTO and View Model, was read on a webpage [15].
+By inspiring a webpage [16] code, DTO with in HTTP Patch body, was used intead of JsonPatchDocument.
+Patch DTO class of "List" class was similar itself instead of a class which have name and value properties, because it was thought that specific properties cannot be validated programmaticaly for Patch DTO class which have name and value properties.
+An validation warning text from a webpage [17], was benefited.
+Input models were change their DTO versions.
+Another model for roles, was added.
+Token repository classes renamed as auth repository names.
+Repository classes were upgraded but controller classes were not updated.
+[1] https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/418
+[2] bugrasarikaya, https://github.com/bugrasarikaya/patika_tasks/blob/main/net_practicum/task_2/CustomMiddlewares/ExceptionMiddleware.cs, 5 Feb 2023.
+[3] bugrasarikaya, https://github.com/bugrasarikaya/patika_tasks/blob/main/net_practicum/task_2/CustomMiddlewares/LoggingMiddleware.cs, 5 Feb 2023.
+[4] https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/try-catch, 02/13/2023.
+[5] https://learn.microsoft.com/en-us/dotnet/standard/exceptions/how-to-create-user-defined-exceptions, 08/12/2022.
+[6] Maroun Maroun, https://medium.com/geekculture/exception-middleware-in-net-core-applications-84e0cc2dacbf, 8 Jan 8 2023.
+[7] joshlang, https://github.com/FluentValidation/FluentValidation/issues/1301, Jan 29, 2020.
+[8] https://stackoverflow.com/questions/33959323/checking-if-parameter-is-one-of-3-values-with-fluent-validation
+[9] https://stackoverflow.com/questions/48181408/fluentvalidation-validator-for-multiple-possible-values
+[10] https://stackoverflow.com/questions/27943758/compare-list-of-strings-with-another-string
+[11] https://stackoverflow.com/questions/737151/how-to-get-the-list-of-properties-of-a-class
+[12] https://docs.fluentvalidation.net/en/latest/conditions.html
+[13] https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/named-and-optional-arguments, 02/25/2023.
+[14] Alex from Jitbit, https://stackoverflow.com/questions/199761/how-can-you-use-optional-parameters-in-c, Jan 7, 2011 at 15:17.
+[15] https://stackoverflow.com/questions/1431445/what-is-the-difference-between-a-view-model-and-a-data-transfer-object
+[16] Hamid Mosalla, https://hamidmosalla.com/2018/04/14/asp-net-core-api-patch-method-without-using-jsonpatchdocument/, April 14, 2018.
+[17] Patrick Stox, https://searchengineland.com/20-googles-limits-may-not-know-exist-281387, September 6, 2017 .

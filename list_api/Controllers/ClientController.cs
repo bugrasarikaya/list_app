@@ -14,23 +14,23 @@ namespace list_api.Controllers {
 			this.client_repository = client_repository;
 			this.client_repository.IDUser = int.Parse(User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value);
 		}
-		[HttpPost("list")]
+		[HttpPost("/list")]
 		public IActionResult CreateList([FromBody] List list) { // Responding with a created list after creating for accessed user.
 			if (ModelState.IsValid) {
 				List? list_created = client_repository.CreateList(list);
 				return Created("api/List/" + list_created.ID, list_created);
 			} else return BadRequest(string.Join(" ", ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
 		}
-		[HttpDelete("list/{id_list:int}")]
+		[HttpDelete("/list/{id_list:int}")]
 		public IActionResult DeleteList(int id_list) { // Responding with no content after deleting for accessed user.
 			Validator id_list_validator = new Validator(id_list);
 			if (id_list_validator.IDValidator()) {
-				List? list_deleted = client_repository.Deletelist(id_list);
+				List? list_deleted = client_repository.DeleteList(id_list);
 				if (list_deleted != null) return NoContent();
 				else return NotFound();
 			} else return BadRequest(string.Join(" ", id_list_validator.ListMessage));
 		}
-		[HttpGet("list/{id_list:int}")]
+		[HttpGet("/list/{id_list:int}")]
 		public IActionResult GetList(int id_list) { // Responding with a list after getting for accessed user.
 			Validator id_list_validator = new Validator(id_list);
 			if (id_list_validator.IDValidator()) {
@@ -39,28 +39,28 @@ namespace list_api.Controllers {
 				else return NotFound();
 			} else return BadRequest(string.Join(" ", id_list_validator.ListMessage));
 		}
-		[HttpGet("list")]
+		[HttpGet("/list")]
 		public IActionResult ListLists() { // Responding with list list for accessed user.
 			return Ok(client_repository.ListLists());
 		}
-		[HttpGet("list")]
+		[HttpGet("/list/{id_category:int}")]
 		public IActionResult ListListsByCategory(int id_category) { // Responding with list list by category for accessed user.
 			Validator id_category_validator = new Validator(id_category);
 			if (id_category_validator.IDValidator())
 				return Ok(client_repository.ListListsByCategory(id_category));
 			else return BadRequest(string.Join(" ", id_category_validator.ListMessage));
 		}
-		[HttpPut("list/{id_list:int}")]
+		[HttpPut("/list/{id_list:int}")]
 		public IActionResult UpdateList(int id_list, [FromBody] List list) { // Responding with an updated list for accessed user.
 			Validator id_list_validator = new Validator(id_list);
 			if (id_list_validator.IDValidator() || ModelState.IsValid) return Ok(client_repository.UpdateList(id_list, list));
 			else return BadRequest(string.Join(" ", id_list_validator.ListMessage) + " " + string.Join(" ", ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
 		}
-		[HttpGet("{id_list:int}")]
+		[HttpGet("/list/{id_list:int}")]
 		public IActionResult SetCompleted(int id_list) { // Responding with a list after setting to "Completed" for accessed user.
 			Validator id_list_validator = new Validator(id_list);
-			if (id_list_validator.IDValidator() || ModelState.IsValid) return Ok(client_repository.SetCompleted(id_list));
-			else return BadRequest(string.Join(" ", id_list_validator.ListMessage) + " " + string.Join(" ", ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
+			if (id_list_validator.IDValidator()) return Ok(client_repository.SetCompleted(id_list));
+			else return BadRequest(string.Join(" ", id_list_validator.ListMessage));
 		}
 		//[HttpGet("listproduct/{id_list:int}")]
 		//public IActionResult ListListProducts(int id_list) { // Responding with product list in a specific list after getting for accessed user.
@@ -68,12 +68,12 @@ namespace list_api.Controllers {
 		//	if (collection_product != null) return Ok(client_repository.ListListProducts(id_list));
 		//	else return NotFound();
 		//}
-		[HttpPost("listproduct")]
+		[HttpPost("/listproduct")]
 		public IActionResult AddProduct([FromBody] ListProduct list_product) { // Responding with list product after adding a product to a list for accessed user.
 			if (ModelState.IsValid) return Ok(client_repository.AddProduct(list_product));
 			else return BadRequest(string.Join(" ", ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
 		}
-		[HttpDelete("listproduct/{id_list:int}/{id_product:int}")]
+		[HttpDelete("/listproduct/{id_list:int}/{id_product:int}")]
 		public IActionResult RemoveProduct(int id_list, int id_product) { // Responding with list after removing a product from a list for accessed user.
 			Validator id_list_validator = new Validator(id_list);
 			if (id_list_validator.IDValidator() || ModelState.IsValid) {
@@ -82,18 +82,18 @@ namespace list_api.Controllers {
 				else return NotFound();
 			} else return BadRequest(string.Join(" ", id_list_validator.ListMessage) + " " + string.Join(" ", ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
 		}
-		[HttpGet("{id_list:int}")]
+		[HttpGet("/listproduct/{id_list:int}")]
 		public IActionResult Clear(int id_list) { // Responding with a list after clearing all products.
 			Validator id_list_validator = new Validator(id_list);
 			if (id_list_validator.IDValidator()) {
-				return Ok(client_repository.Clear(id_list));
+				return Ok(client_repository.ClearList(id_list));
 			} else return BadRequest(string.Join(" ", id_list_validator.ListMessage));
 		}
-		[HttpGet("{user}")]
+		[HttpGet("/user/{user}")]
 		public IActionResult GetUser() { // Responding with a user after getting for accessed user.
 			return Ok(client_repository.GetUser());
 		}
-		[HttpPut("{user}")]
+		[HttpPut("/user/{user}")]
 		public IActionResult UpdateUser([FromBody] User user) { // Responding with a user after updating for accessed user.
 			if (ModelState.IsValid) return Ok(client_repository.UpdateUser(user));
 			else return BadRequest(string.Join(" ", ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
