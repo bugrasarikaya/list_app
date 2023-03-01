@@ -8,7 +8,7 @@ using list_api.Models.DTOs;
 namespace list_api.Controllers {
 	[ApiController]
 	[Authorize(Roles = "Admin")]
-	[Route("api[controller]")]
+	[Route("api/[controller]")]
 	public class UserController : ControllerBase {
 		private readonly IUserRepository user_repository;
 		public UserController(IUserRepository user_repository) { // Constructing.

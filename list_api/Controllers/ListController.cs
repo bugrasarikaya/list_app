@@ -8,7 +8,7 @@ using list_api.Repository.Interface;
 namespace list_api.Controllers {
 	[ApiController]
 	[Authorize(Roles = "Admin")]
-	[Route("api[controller]")]
+	[Route("api/[controller]")]
 	public class ListController : ControllerBase {
 		private readonly IListRepository list_repository;
 		public ListController(IListRepository list_repository) { // Constructing.
@@ -70,19 +70,19 @@ namespace list_api.Controllers {
 			if (id_list_validator.IDValidator() || ModelState.IsValid) return Ok(list_repository.Patch(id_list, list_patch_dto));
 			else return BadRequest(id_list_validator.ListMessage.Concat(ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
 		}
-		[HttpPost]
+		[HttpPost("listproduct")]
 		public IActionResult AddProduct([FromBody] ListProductDTO list_productdto) { // Responding with a list after adding a product.
 			if (ModelState.IsValid) return Ok(list_repository.AddProduct(list_productdto));
 			else return BadRequest(ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage));
 		}
-		[HttpDelete("{id_list:int}/{id_product:int}")]
+		[HttpDelete("listproduct/{id_list:int}/{id_product:int}")]
 		public IActionResult RemoveProduct(int id_list, int id_product) { // Responding with a list after removing a product.
 			Validator id_list_validator = new Validator(id_list);
 			Validator id_product_validator = new Validator(id_product);
 			if (id_list_validator.IDValidator() || id_product_validator.IDValidator()) return Ok(list_repository.RemoveProduct(id_list, id_product));
 			else return BadRequest(id_list_validator.ListMessage.Concat(id_product_validator.ListMessage));
 		}
-		[HttpGet("{id_list:int}")]
+		[HttpGet("listproduct/{id_list:int}")]
 		public IActionResult ClearProducts(int id_list) { // Responding with a list after clearing all products.
 			Validator id_list_validator = new Validator(id_list);
 			if (id_list_validator.IDValidator()) return Ok(list_repository.ClearProducts(id_list));

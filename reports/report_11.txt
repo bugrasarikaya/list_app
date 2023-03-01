@@ -1,0 +1,13 @@
+Unused validator classess were removed.
+Missing security class updates were applied.
+Two webpages [1] [2] about Redis Cache, were examined.
+Redis v3.0.504, was downloaded from a webpage [3].
+Last lecture record of .NET Practicum, was examining for learning Redis.
+Thanks to lecture record a caching implementation was added to repository classes.
+Only category, product, role and status entities were cached because it was thought that they are stable.
+Feature of caching product list, was removed because it was remembered cache values should be small.
+Thanks to a video tutorial [4], a detected routing problem was fixed.
+[1] OKAN KARADAĞ, https://okankaradag.com/asp-net/asp-net-core/net-6-0-redis-ile-cache-yonetimi, 24 OCAK 2022.
+[2] Sarathlal Saseendran, https://www.c-sharpcorner.com/article/easily-use-redis-cache-in-asp-net-6-0-web-api/, Jun 22, 2022.
+[3] enricogior, https://github.com/microsoftarchive/redis/releases/tag/win-3.0.504, Jul 1, 2016.
+[4] dotnet, https://youtu.be/i8iICilTuAs, 4 Mar 2021.

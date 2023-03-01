@@ -8,7 +8,7 @@ using list_api.Repository.Interface;
 namespace list_api.Controllers {
 	[ApiController]
 	[Authorize(Roles = "Admin")]
-	[Route("api[controller]")]
+	[Route("api/[controller]")]
 	public class ProductController : ControllerBase {
 		private readonly IProductRepository product_repository;
 		public ProductController(IProductRepository product_repository) { // Constructing.

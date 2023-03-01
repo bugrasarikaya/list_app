@@ -1,11 +1,12 @@
-﻿using list_api.Data;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using list_api.Data;
 using list_api.Exceptions;
 using list_api.Models;
 namespace list_api.Repository.Common {
 	public static class Supply {
-		public static T ByID<T>(IListApiDbContext context, int id_1, int id_2 = 0) { // Supplying a record by ID after checking.
+		public static T ByID<T>(IDistributedCache cache, IListApiDbContext context, int id_1, int id_2 = 0) { // Supplying a record by ID after checking.
 			if (typeof(T) == typeof(Category)) {
-				Category? category = context.Categories.SingleOrDefault(c => c.ID == id_1);
+				Category? category = RedisCache.Supply<List<Category>>(cache, context).SingleOrDefault(c => c.ID == id_1);
 				if (category != null) return (T)Convert.ChangeType(category, typeof(T));
 				else throw new NotFoundException("Category could not be found.");
 			} else if (typeof(T) == typeof(List)) {
@@ -21,11 +22,11 @@ namespace list_api.Repository.Common {
 				if (product != null) return (T)Convert.ChangeType(product, typeof(T));
 				else throw new NotFoundException("Product could not be found.");
 			} else if (typeof(T) == typeof(Role)) {
-				Role? role = context.Roles.SingleOrDefault(r => r.ID == id_1);
+				Role? role = RedisCache.Supply<List<Role>>(cache, context).SingleOrDefault(r => r.ID == id_1);
 				if (role != null) return (T)Convert.ChangeType(role, typeof(T));
 				else throw new NotFoundException("Role could not be found.");
 			} else if (typeof(T) == typeof(Status)) {
-				Status? status = context.Statuses.SingleOrDefault(s => s.ID == id_1);
+				Status? status = RedisCache.Supply<List<Status>>(cache, context).SingleOrDefault(s => s.ID == id_1);
 				if (status != null) return (T)Convert.ChangeType(status, typeof(T));
 				else throw new NotFoundException("Status could not be found.");
 			} else {
@@ -34,9 +35,9 @@ namespace list_api.Repository.Common {
 				else throw new NotFoundException("User could not be found.");
 			}
 		}
-		public static T ByName<T>(IListApiDbContext context, string name, int id_user = 0) { // Supplying a record by Name after checking.
+		public static T ByName<T>(IDistributedCache cache, IListApiDbContext context, string name, int id_user = 0) { // Supplying a record by Name after checking.
 			if (typeof(T) == typeof(Category)) {
-				Category? category = context.Categories.SingleOrDefault(c => c.Name == name);
+				Category? category = RedisCache.Supply<List<Category>>(cache, context).SingleOrDefault(c => c.Name == name);
 				if (category != null) return (T)Convert.ChangeType(category, typeof(T));
 				else throw new NotFoundException("Category could not be found.");
 			} else if (typeof(T) == typeof(List)) {
@@ -48,11 +49,11 @@ namespace list_api.Repository.Common {
 				if (product != null) return (T)Convert.ChangeType(product, typeof(T));
 				else throw new NotFoundException("Product could not be found.");
 			} else if (typeof(T) == typeof(Role)) {
-				Role? role = context.Roles.SingleOrDefault(r => r.Name == name);
+				Role? role = RedisCache.Supply<List<Role>>(cache, context).SingleOrDefault(r => r.Name == name);
 				if (role != null) return (T)Convert.ChangeType(role, typeof(T));
 				else throw new NotFoundException("Role could not be found.");
 			} else if (typeof(T) == typeof(Status)) {
-				Status? status = context.Statuses.SingleOrDefault(s => s.Name == name);
+				Status? status = RedisCache.Supply<List<Status>>(cache, context).SingleOrDefault(s => s.Name == name);
 				if (status != null) return (T)Convert.ChangeType(status, typeof(T));
 				else throw new NotFoundException("Status could not be found.");
 			} else {

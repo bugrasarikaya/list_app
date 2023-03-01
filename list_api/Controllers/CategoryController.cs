@@ -8,7 +8,7 @@ using list_api.Repository.Interface;
 namespace list_api.Controllers {
 	[ApiController]
 	[Authorize(Roles = "Admin")]
-	[Route("api[controller]")]
+	[Route("api/[controller]")]
 	public class CategoryController : ControllerBase {
 		private readonly ICategoryRepository category_repository;
 		public CategoryController(ICategoryRepository category_repository) { // Constructing.

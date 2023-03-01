@@ -19,10 +19,11 @@ namespace list_api {
 			builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 			builder.Services.AddScoped<IListRepository, ListRepository>();
 			builder.Services.AddScoped<IProductRepository, ProductRepository>();
-			builder.Services.AddScoped<ITokenRepository, AuthRepository>();
+			builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 			builder.Services.AddScoped<IUserRepository, UserRepository>();
 			builder.Services.AddScoped<IListApiDbContext>(provider => provider.GetService<ListApiDbContext>()!);
 			builder.Services.AddDbContext<ListApiDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DbConnection")));
+			builder.Services.AddStackExchangeRedisCache(options => options.Configuration = configuration["RedisCacheUrl"]);
 			builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 			builder.Services.AddFluentValidationAutoValidation();
 			builder.Services.AddFluentValidationClientsideAdapters();
@@ -30,12 +31,10 @@ namespace list_api {
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen(options => {
 				options.SwaggerDoc("v1", new OpenApiInfo() { Title = "list_app_auth", Version = "v1" });
-				options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme() { Name = "Authorization", Description = "Please enter a valid token (\"bearer {token}\"):", Type = SecuritySchemeType.ApiKey, Scheme = "Bearer", BearerFormat = "JWT", In = ParameterLocation.Header });
+				options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme() { Name = "Authorization", Description = "Please enter a valid token:", Type = SecuritySchemeType.ApiKey, Scheme = "bearer", BearerFormat = "JWT", In = ParameterLocation.Header });
 				options.AddSecurityRequirement(new OpenApiSecurityRequirement() { { new OpenApiSecurityScheme { Reference = new OpenApiReference() { Type = ReferenceType.SecurityScheme, Id = "Bearer" } }, new string[] { } } });
 			});
-			builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
-				options.TokenValidationParameters = new TokenValidationParameters { ValidateAudience = false, ValidateIssuer = false, ValidateLifetime = true, ValidateIssuerSigningKey = true, ValidIssuer = configuration["Token:Issuer"], ValidAudience = configuration["Token:Audience"], IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:SecurityKey"]!)), ClockSkew = TimeSpan.Zero };
-			});
+			builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters { ValidateAudience = false, ValidateIssuer = false, ValidateLifetime = true, ValidateIssuerSigningKey = true, ValidIssuer = configuration["Token:Issuer"], ValidAudience = configuration["Token:Audience"], IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:SecurityKey"]!)), ClockSkew = TimeSpan.Zero });
 			var app = builder.Build();
 			app.UseSwagger();
 			app.UseSwaggerUI();

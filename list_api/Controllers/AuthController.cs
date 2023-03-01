@@ -6,20 +6,20 @@ using list_api.Security;
 namespace list_api.Controllers {
 	[ApiController]
 	[AllowAnonymous]
-	[Route("api[controller]")]
+	[Route("api/[controller]")]
 	public class AuthController : ControllerBase { // Constructing.
 		private readonly IAuthRepository auth_repository;
 		public AuthController(IAuthRepository auth_repository) {
 			this.auth_repository = auth_repository;
 		}
-		[HttpPost("/register")]
+		[HttpPost("register")]
 		public IActionResult Register([FromBody] UserAuthDTO user_auth_dto) { // Responding with OK status after registering a user.
 			if (ModelState.IsValid) {
 				auth_repository.Register(user_auth_dto);
 				return Ok();
 			} else return BadRequest(ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage));
 		}
-		[HttpPost("/login")]
+		[HttpPost("login")]
 		public IActionResult LogIn([FromBody] UserAuthDTO user_auth_dto) { // Responding with a token after logging into system as a user.
 			if (ModelState.IsValid) return Ok(auth_repository.LogIn(user_auth_dto));
 			return BadRequest(ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage));

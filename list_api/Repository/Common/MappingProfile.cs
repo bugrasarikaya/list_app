@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using list_api.Models;
-namespace list_api.Common {
+using list_api.Models.ViewModels;
+namespace list_api.Repository.Common {
 	public class MappingProfile : Profile {
 		public MappingProfile() {
 			CreateMap<Category, CategoryViewModel>();
