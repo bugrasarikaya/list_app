@@ -9,7 +9,7 @@ namespace list_api.Common {
 			CreateMap<Product, ProductViewModel>();
 			CreateMap<Role, RoleViewModel>();
 			CreateMap<Status, StatusViewModel>();
-			CreateMap<User, UserViewModel>();
+			CreateMap<User, ClientUserViewModel>();
 		}
 	}
 }

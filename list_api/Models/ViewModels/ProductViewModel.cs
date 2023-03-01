@@ -1,4 +1,4 @@
-﻿namespace list_api.Models {
+﻿namespace list_api.Models.ViewModels {
 	public class ProductViewModel {
 		public int ID { get; set; }
 		public int IDCategory { get; set; }

@@ -8,7 +8,7 @@ namespace list_api.Models {
 		public int IDUser { get; set; }
 		public string Name { get; set; } = null!;
 		public string? Description { get; set; }
-		public DateTime DateTime { get; set; } = DateTime.Now;
+		public DateTime DateTime { get; set; }
 		public double TotalCost { get; set; }
 	}
 }

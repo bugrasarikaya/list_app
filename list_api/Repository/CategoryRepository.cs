@@ -2,6 +2,7 @@
 using list_api.Data;
 using list_api.Models;
 using list_api.Models.DTOs;
+using list_api.Models.ViewModels;
 using list_api.Repository.Common;
 using list_api.Repository.Interface;
 namespace list_api.Repository {
@@ -18,13 +19,12 @@ namespace list_api.Repository {
 			context.SaveChanges();
 			return category_created;
 		}
-		public Category? Delete(int id) { // Deleting a category.
+		public void Delete(int id) { // Deleting a category.
 			Category category_deleted = Supply.ByID<Category>(context, id);
 			Check.ForeignIDForConflict<List, Category>(context, id);
 			Check.ForeignIDForConflict<Product, Category>(context, id);
 			context.Categories.Remove(category_deleted);
 			context.SaveChanges();
-			return category_deleted;
 		}
 		public CategoryViewModel Get(int id) { // Getting a category.
 			return mapper.Map<CategoryViewModel>(Supply.ByID<Category>(context, id));
@@ -34,17 +34,17 @@ namespace list_api.Repository {
 			foreach (int id in context.Categories.Select(c => c.ID).ToList()) list_category_view_model.Add(mapper.Map<CategoryViewModel>(Supply.ByID<Category>(context, id)));
 			return list_category_view_model;
 		}
-		public Category Update(int id, CategoryDTO category_dto) { // Updating a category.
+		public CategoryViewModel Update(int id, CategoryDTO category_dto) { // Updating a category.
 			Category category_updated = Supply.ByID<Category>(context, id);
 			category_updated.Name = Check.NameForConflict<Category>(context, category_dto.Name);
 			context.SaveChanges();
-			return category_updated;
+			return mapper.Map<CategoryViewModel>(category_updated);
 		}
-		public Category Patch(int id, CategoryPatchDTO category_patch_dto) { // Patching a category.
+		public CategoryViewModel Patch(int id, CategoryPatchDTO category_patch_dto) { // Patching a category.
 			Category category_patched = Supply.ByID<Category>(context, id);
 			if (!string.IsNullOrEmpty(category_patch_dto.Name)) category_patched.Name = Check.NameForConflict<List>(context, category_patch_dto.Name);
 			context.SaveChanges();
-			return category_patched;
+			return mapper.Map<CategoryViewModel>(category_patched);
 		}
 	}
 }

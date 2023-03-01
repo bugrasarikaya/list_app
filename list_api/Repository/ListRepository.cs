@@ -2,6 +2,7 @@
 using list_api.Data;
 using list_api.Models;
 using list_api.Models.DTOs;
+using list_api.Models.ViewModels;
 using list_api.Repository.Common;
 using list_api.Repository.Interface;
 namespace list_api.Repository {
@@ -18,11 +19,10 @@ namespace list_api.Repository {
 			context.SaveChanges();
 			return list_created;
 		}
-		public List? Delete(int id_list) { // Deleting a list.
+		public void Delete(int id_list) { // Deleting a list.
 			List list_deleted = Supply.ByID<List>(context, id_list);
 			context.Lists.Remove(list_deleted);
 			context.SaveChanges();
-			return list_deleted;
 		}
 		public ListViewModel Get(int id_list) { // Getting a list.
 			List list = Supply.ByID<List>(context, id_list);
@@ -30,7 +30,7 @@ namespace list_api.Repository {
 			list_view_model.Category = Supply.ByID<Category>(context, list.IDCategory);
 			list_view_model.Products = mapper.Map<List<ProductViewModel>>(context.Products.Where(p => context.ListProducts.Any(lp => lp.IDProduct == p.ID)).ToList());
 			list_view_model.Products = mapper.Map<List<ProductViewModel>>(context.ListProducts.Where(lp => context.Products.Any(p => p.ID == lp.IDProduct)).ToList());
-			list_view_model.User = mapper.Map<UserViewModel>(Supply.ByID<User>(context, list.IDUser));
+			list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(context, list.IDUser));
 			return list_view_model;
 		}
 		public ICollection<ListViewModel> List() { // Listing all lists.
@@ -41,7 +41,7 @@ namespace list_api.Repository {
 				list_view_model.Category = Supply.ByID<Category>(context, list.IDCategory);
 				list_view_model.Products = mapper.Map<List<ProductViewModel>>(context.Products.Where(p => context.ListProducts.Any(lp => lp.IDProduct == p.ID)).ToList());
 				list_view_model.Products = mapper.Map<List<ProductViewModel>>(context.ListProducts.Where(lp => context.Products.Any(p => p.ID == lp.IDProduct)).ToList());
-				list_view_model.User = mapper.Map<UserViewModel>(Supply.ByID<User>(context, list.IDUser));
+				list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(context, list.IDUser));
 				list_list_view_model.Add(list_view_model);
 			}
 			return list_list_view_model;
@@ -54,7 +54,7 @@ namespace list_api.Repository {
 				list_view_model.Category = Supply.ByID<Category>(context, list.IDCategory);
 				list_view_model.Products = mapper.Map<List<ProductViewModel>>(context.Products.Where(p => context.ListProducts.Any(lp => lp.IDProduct == p.ID)).ToList());
 				list_view_model.Products = mapper.Map<List<ProductViewModel>>(context.ListProducts.Where(lp => context.Products.Any(p => p.ID == lp.IDProduct)).ToList());
-				list_view_model.User = mapper.Map<UserViewModel>(Supply.ByID<User>(context, list.IDUser));
+				list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(context, list.IDUser));
 				list_list_view_model.Add(list_view_model);
 			}
 			return list_list_view_model;
@@ -67,7 +67,7 @@ namespace list_api.Repository {
 				list_view_model.Category = Supply.ByID<Category>(context, list.IDCategory);
 				list_view_model.Products = mapper.Map<List<ProductViewModel>>(context.Products.Where(p => context.ListProducts.Any(lp => lp.IDProduct == p.ID)).ToList());
 				list_view_model.Products = mapper.Map<List<ProductViewModel>>(context.ListProducts.Where(lp => context.Products.Any(p => p.ID == lp.IDProduct)).ToList());
-				list_view_model.User = mapper.Map<UserViewModel>(Supply.ByID<User>(context, list.IDUser));
+				list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(context, list.IDUser));
 				list_list_view_model.Add(list_view_model);
 			}
 			return list_list_view_model;
@@ -80,12 +80,12 @@ namespace list_api.Repository {
 				list_view_model.Category = Supply.ByID<Category>(context, list.IDCategory);
 				list_view_model.Products = mapper.Map<List<ProductViewModel>>(context.Products.Where(p => context.ListProducts.Any(lp => lp.IDProduct == p.ID)).ToList());
 				list_view_model.Products = mapper.Map<List<ProductViewModel>>(context.ListProducts.Where(lp => context.Products.Any(p => p.ID == lp.IDProduct)).ToList());
-				list_view_model.User = mapper.Map<UserViewModel>(Supply.ByID<User>(context, list.IDUser));
+				list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(context, list.IDUser));
 				list_list_view_model.Add(list_view_model);
 			}
 			return list_list_view_model;
 		}
-		public List Update(int id_list, ListDTO list_dto) { // Updating a list.
+		public ListViewModel Update(int id_list, ListDTO list_dto) { // Updating a list.
 			List list_updated = Supply.ByID<List>(context, id_list);
 			list_updated.IDCategory = Check.ID<Category>(context, list_dto.IDCategory);
 			list_updated.IDStatus = Check.ID<Status>(context, list_dto.IDStatus);
@@ -93,9 +93,9 @@ namespace list_api.Repository {
 			list_updated.Name = Check.NameForConflict<List>(context, list_dto.Name, list_dto.IDUser);
 			list_updated.Description = list_dto.Description;
 			context.SaveChanges();
-			return list_updated;
+			return mapper.Map<ListViewModel>(list_updated);
 		}
-		public List Patch(int id_list, ListPatchDTO list_patch_dto) { // Patch a list.
+		public ListViewModel Patch(int id_list, ListPatchDTO list_patch_dto) { // Patch a list.
 			List list_patched = Supply.ByID<List>(context, id_list);
 			if (list_patch_dto.IDCategory != default(int)) list_patched.IDCategory = Check.ID<Category>(context, list_patch_dto.IDCategory);
 			if (list_patch_dto.IDStatus != default(int)) list_patched.IDStatus = Check.ID<Status>(context, list_patch_dto.IDStatus);
@@ -103,9 +103,9 @@ namespace list_api.Repository {
 			if (!string.IsNullOrEmpty(list_patch_dto.Name)) list_patched.Name = Check.NameForConflict<List>(context, list_patch_dto.Name, list_patch_dto.IDUser);
 			if (!string.IsNullOrEmpty(list_patch_dto.Description)) list_patched.Description = list_patch_dto.Description;
 			context.SaveChanges();
-			return list_patched;
+			return mapper.Map<ListViewModel>(list_patched);
 		}
-		public ListViewModel Add(ListProductDTO list_product_dto) { // Adding a product to a list.
+		public ListViewModel AddProduct(ListProductDTO list_product_dto) { // Adding a product to a list.
 			List list = Supply.ByID<List>(context, list_product_dto.IDList);
 			Product product = Supply.ByID<Product>(context, list_product_dto.IDProduct);
 			ListProduct list_product_created = new ListProduct() { IDList = list_product_dto.IDList, IDProduct = list_product_dto.IDProduct, Quantity = list_product_dto.Quantity };
@@ -117,7 +117,7 @@ namespace list_api.Repository {
 			context.SaveChanges();
 			return Get(list_product_dto.IDList)!;
 		}
-		public ListViewModel? Remove(int id_list, int id_product) { // Removing a product from a list.
+		public ListViewModel RemoveProduct(int id_list, int id_product) { // Removing a product from a list.
 			List list = Supply.ByID<List>(context, id_list);
 			Product? product = Supply.ByID<Product>(context, id_product);
 			ListProduct list_product_deleted = Supply.ByID<ListProduct>(context, id_list, id_product);
@@ -128,14 +128,14 @@ namespace list_api.Repository {
 			context.SaveChanges();
 			return Get(id_list);
 		}
-		public List Clear(int id_list) { // Removing all products from a list.
+		public ListViewModel ClearProducts(int id_list) { // Removing all products from a list.
 			List list = Supply.ByID<List>(context, id_list);
 			list.TotalCost = 0.0;
 			list.DateTime = DateTime.Now;
 			list.IDStatus = Supply.ByID<Status>(context, 2).ID;
 			context.ListProducts.RemoveRange(context.ListProducts.Where(lp => lp.IDList == id_list));
 			context.SaveChanges();
-			return list;
+			return mapper.Map<ListViewModel>(list);
 		}
 	}
 }

@@ -6,7 +6,7 @@ namespace list_api.Security {
 		public SecurityValidator(object parameter) { // Constructing.
 			this.parameter = parameter;
 		}
-		public  bool RefreshTokenValidator() { // Validating given refresh token.
+		public bool RefreshTokenValidator() { // Validating given refresh token.
 			if (string.IsNullOrEmpty((string)parameter)) {
 				ListMessage.Add("Refresh token cannot be empty.");
 				return false;

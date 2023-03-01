@@ -2,6 +2,7 @@
 using list_api.Data;
 using list_api.Models;
 using list_api.Models.DTOs;
+using list_api.Models.ViewModels;
 using list_api.Repository.Common;
 using list_api.Repository.Interface;
 namespace list_api.Repository {
@@ -18,12 +19,11 @@ namespace list_api.Repository {
 			context.SaveChanges();
 			return status_created;
 		}
-		public Status? Delete(int id) { // Deleting a status.
+		public void Delete(int id) { // Deleting a status.
 			Status status_deleted = Supply.ByID<Status>(context, id);
 			Check.ForeignIDForConflict<List, Status>(context, id);
 			context.Statuses.Remove(status_deleted);
 			context.SaveChanges();
-			return status_deleted;
 		}
 		public StatusViewModel Get(int id) { // Getting a status.
 			return mapper.Map<StatusViewModel>(Supply.ByID<Status>(context, id));
@@ -33,17 +33,17 @@ namespace list_api.Repository {
 			foreach (int id in context.Statuses.Select(s => s.ID).ToList()) list_status_view_model.Add(mapper.Map<StatusViewModel>(Supply.ByID<Status>(context, id)));
 			return list_status_view_model;
 		}
-		public Status Update(int id, StatusDTO status_dto) { // Updating a status.
+		public StatusViewModel Update(int id, StatusDTO status_dto) { // Updating a status.
 			Status status_updated = Supply.ByID<Status>(context, id);
 			status_updated.Name = Check.NameForConflict<Status>(context, status_dto.Name);
 			context.SaveChanges();
-			return status_updated;
+			return mapper.Map<StatusViewModel>(status_updated);
 		}
-		public Status Patch(int id, StatusPatchDTO status_patch_dto) { // Patching a status.
+		public StatusViewModel Patch(int id, StatusPatchDTO status_patch_dto) { // Patching a status.
 			Status status_patched = Supply.ByID<Status>(context, id);
 			if (!string.IsNullOrEmpty(status_patch_dto.Name)) status_patched.Name = Check.NameForConflict<List>(context, status_patch_dto.Name);
 			context.SaveChanges();
-			return status_patched;
+			return mapper.Map<StatusViewModel>(status_patched);
 		}
 	}
 }
