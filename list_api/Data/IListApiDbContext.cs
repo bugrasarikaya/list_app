@@ -2,6 +2,7 @@
 using list_api.Models;
 namespace list_api.Data {
 	public interface IListApiDbContext {
+		DbSet<Brand> Brands { get; set; }
 		DbSet<Category> Categories { get; set; }
 		DbSet<List> Lists { get; set; }
 		DbSet<ListProduct> ListProducts { get; set; }

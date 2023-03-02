@@ -4,10 +4,10 @@ using list_api.Models.ViewModels;
 namespace list_api.Repository.Interface {
 	public interface IRoleRepository {
 		public Role Create(RoleDTO role_dto);
-		public void Delete(int id);
-		public RoleViewModel Get(int id);
+		public void Delete(string param_role);
+		public RoleViewModel Get(string param_role);
 		public ICollection<RoleViewModel> List();
-		public RoleViewModel Update(int id, RoleDTO role_dto);
-		public RoleViewModel Patch(int id, RolePatchDTO role_patch_dto);
+		public RoleViewModel Update(string param_role, RoleDTO role_dto);
+		public RoleViewModel Patch(string param_role, RolePatchDTO role_patch_dto);
 	}
 }

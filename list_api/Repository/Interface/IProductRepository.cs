@@ -7,7 +7,7 @@ namespace list_api.Repository.Interface {
 		public void Delete(int id);
 		public ProductViewModel? Get(int id);
 		public ICollection<ProductViewModel> List();
-		public ICollection<ProductViewModel> List(int id_category);
+		public ICollection<ProductViewModel> List(string param_category);
 		public ProductViewModel Update(int id, ProductDTO product_dto);
 		public ProductViewModel Patch(int id, ProductPatchDTO product_patch_dto);
 	}

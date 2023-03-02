@@ -24,7 +24,7 @@ namespace list_api.Controllers {
 		[HttpDelete("{id:int}")]
 		public IActionResult Delete(int id) { // Responding with no content after deleting.
 			Validator id_validator = new Validator(id);
-			if (id_validator.IDValidator()) {
+			if (id_validator.Validate()) {
 				product_repository.Delete(id);
 				return NoContent();
 			} else return BadRequest(id_validator.ListMessage);
@@ -33,7 +33,7 @@ namespace list_api.Controllers {
 		[HttpGet("{id:int}")]
 		public IActionResult Get(int id) { // Responding with a product after getting.
 			Validator id_validator = new Validator(id);
-			if (id_validator.IDValidator()) return Ok(product_repository.Get(id));
+			if (id_validator.Validate()) return Ok(product_repository.Get(id));
 			else return BadRequest(id_validator.ListMessage);
 		}
 		[Authorize(Roles = "Admin, User")]
@@ -42,22 +42,22 @@ namespace list_api.Controllers {
 			return Ok(product_repository.List());
 		}
 		[Authorize(Roles = "Admin, User")]
-		[HttpGet("{id_category:int}")]
-		public IActionResult List(int id_category) { // Listing all products which have a specific category.
-			Validator id_category_validator = new Validator(id_category);
-			if (id_category_validator.IDValidator()) return Ok(product_repository.List(id_category));
-			else return BadRequest(id_category_validator.ListMessage);
+		[HttpGet("{param_category}")]
+		public IActionResult List(string param_category) { // Listing all products which have a specific category.
+			Validator param_category_validator = new Validator(param_category);
+			if (param_category_validator.Validate()) return Ok(product_repository.List(param_category));
+			else return BadRequest(param_category_validator.ListMessage);
 		}
 		[HttpPut("{id:int}")]
 		public IActionResult Update(int id, [FromBody] ProductDTO product_dto) { // Responding with an updated product after updating.
 			Validator id_validator = new Validator(id);
-			if (id_validator.IDValidator() || ModelState.IsValid) return Ok(product_repository.Update(id, product_dto));
+			if (id_validator.Validate() || ModelState.IsValid) return Ok(product_repository.Update(id, product_dto));
 			else return BadRequest(id_validator.ListMessage.Concat(ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
 		}
 		[HttpPatch("{id:int}")]
 		public IActionResult Patch(int id, [FromBody] ProductPatchDTO product_patch_dto) { // Responding with a patched product after patching.
 			Validator id_validator = new Validator(id);
-			if (id_validator.IDValidator() || ModelState.IsValid) return Ok(product_repository.Patch(id, product_patch_dto));
+			if (id_validator.Validate() || ModelState.IsValid) return Ok(product_repository.Patch(id, product_patch_dto));
 			else return BadRequest(id_validator.ListMessage.Concat(ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
 		}
 	}

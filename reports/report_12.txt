@@ -1,0 +1,25 @@
+In a webpage [1], it was learnt that Web API (or Swagger) support DateTime as paramater type.
+"TryParse" method was remembered in a webpage [2].
+Uniqueness feature of product name, was removed but brand property was added.
+Brand model with its classes, was added.
+Thanks to IDE0018 warning, decleration of an int variable before usage of "int.TryParse" method, was inlined.
+Some actions' route statements were modified to fix endpoint conflict.
+Feature of searching with unique name was added all repository classes.
+DateTime property of list, was expanded.
+Feature of clearing all products, was removed because it was thought that it is dangerous.
+403 Forbidden HTTP status code was remembered in a webpage [3] and it was used while checking list status.
+Classes which checks completeness status of list, were added into related repositories.
+Enumerator classes were added for retrieving role and status IDs instead without using numbers.
+Feature of changing list status, was removed from updating list operations but it have remained in still patching operations.
+Feature of filtering listing for date time, was added to related conrollers and repository classes.
+Ordering query examples were examined on two webpages [4] [5].
+While testing a previous project, it was observed that a list query returns non null list and element count of list, is 0.
+A new query method for list, was added into "Supply" classes.
+Ordering was added to listing queries.
+New method of "Supply" class, were added all repository classes.
+A method for filling view models, was written but it will added to repository classes next update.
+[1] AgaveJoe, https://learn.microsoft.com/en-us/answers/questions/489952/date-filtering-web-api-(aspnetcore-hosted-blazor-w, Jul 26, 2021, 9:47 PM.
+[2] Noldorin, Community (Bot), https://stackoverflow.com/questions/1130698/checking-if-an-object-is-a-number, answered Jul 15, 2009 at 10:52, edited Jun 20, 2020 at 9:12.
+[3] Nic Wortel, Community (Bot), https://stackoverflow.com/questions/24570866/rest-api-best-http-status-response-for-illegal-operation, answered Jul 4, 2014 at 9:59, edited Oct 7, 2021 at 5:49.
+[4] https://stackoverflow.com/questions/1635497/orderby-descending-in-lambda-expression
+[5] Jessica Wilkins, https://www.freecodecamp.org/news/ascending-order-with-sql-order-by/, SEPTEMBER 20, 2021.

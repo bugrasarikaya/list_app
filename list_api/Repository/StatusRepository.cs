@@ -23,29 +23,36 @@ namespace list_api.Repository {
 			RedisCache.Recache<Status>(cache, context);
 			return status_created;
 		}
-		public void Delete(int id) { // Deleting a status.
-			Status status_deleted = Supply.ByID<Status>(cache, context, id);
-			Check.ForeignIDForConflict<List, Status>(cache, context, id);
+		public void Delete(string param_status) { // Deleting a status.
+			Status status_deleted;
+			if (int.TryParse(param_status, out int id_status)) status_deleted = Supply.ByID<Status>(cache, context, id_status);
+			else status_deleted = Supply.ByName<Status>(cache, context, param_status);
+			Check.ForeignIDForConflict<List, Status>(cache, context, status_deleted.ID);
 			context.Statuses.Remove(status_deleted);
 			context.SaveChanges();
 			RedisCache.Recache<Status>(cache, context);
 		}
-		public StatusViewModel Get(int id) { // Getting a status.
-			return mapper.Map<StatusViewModel>(Supply.ByID<Status>(cache, context, id));
+		public StatusViewModel Get(string param_status) { // Getting a status.
+			if (int.TryParse(param_status, out int id_status)) return mapper.Map<StatusViewModel>(Supply.ByID<Status>(cache, context, id_status));
+			else return mapper.Map<StatusViewModel>(Supply.ByName<Status>(cache, context, param_status));
 		}
-		public ICollection<StatusViewModel> List() { // Listing all categories.
+		public ICollection<StatusViewModel> List() { // Listing all statuses.
 			ICollection<StatusViewModel> list_status_view_model = new List<StatusViewModel>();
-			foreach (int id in context.Statuses.Select(s => s.ID).ToList()) list_status_view_model.Add(mapper.Map<StatusViewModel>(Supply.ByID<Status>(cache, context, id)));
+			foreach (int id in Supply.List<Status>(cache, context).OrderBy(s => s.Name).Select(s => s.ID).ToList()) list_status_view_model.Add(mapper.Map<StatusViewModel>(Supply.ByID<Status>(cache, context, id)));
 			return list_status_view_model;
 		}
-		public StatusViewModel Update(int id, StatusDTO status_dto) { // Updating a status.
-			Status status_updated = Supply.ByID<Status>(cache, context, id);
+		public StatusViewModel Update(string param_status, StatusDTO status_dto) { // Updating a status.
+			Status status_updated;
+			if (int.TryParse(param_status, out int id_status)) status_updated = Supply.ByID<Status>(cache, context, id_status);
+			else status_updated = Supply.ByName<Status>(cache, context, param_status);
 			status_updated.Name = Check.NameForConflict<Status>(cache, context, status_dto.Name);
 			context.SaveChanges();
 			return mapper.Map<StatusViewModel>(status_updated);
 		}
-		public StatusViewModel Patch(int id, StatusPatchDTO status_patch_dto) { // Patching a status.
-			Status status_patched = Supply.ByID<Status>(cache, context, id);
+		public StatusViewModel Patch(string param_status, StatusPatchDTO status_patch_dto) { // Patching a status.
+			Status status_patched;
+			if (int.TryParse(param_status, out int id_status)) status_patched = Supply.ByID<Status>(cache, context, id_status);
+			else status_patched = Supply.ByName<Status>(cache, context, param_status);
 			if (!string.IsNullOrEmpty(status_patch_dto.Name)) status_patched.Name = Check.NameForConflict<List>(cache, context, status_patch_dto.Name);
 			context.SaveChanges();
 			return mapper.Map<StatusViewModel>(status_patched);

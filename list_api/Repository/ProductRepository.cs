@@ -36,7 +36,7 @@ namespace list_api.Repository {
 		}
 		public ICollection<ProductViewModel> List() { // Listing all products.
 			ICollection<ProductViewModel> list_product_view_model = new List<ProductViewModel>();
-			foreach (int id in context.Products.Select(p => p.ID).ToList()) {
+			foreach (int id in Supply.List<Product>(cache, context).OrderBy(p => p.Name).Select(p => p.ID).ToList()) {
 				Product product = Supply.ByID<Product>(cache, context, id);
 				ProductViewModel product_view_model = mapper.Map<ProductViewModel>(product);
 				product_view_model.NameCategory = Supply.ByID<Category>(cache, context, product.IDCategory).Name;
@@ -44,9 +44,12 @@ namespace list_api.Repository {
 			}
 			return list_product_view_model;
 		}
-		public ICollection<ProductViewModel> List(int id_category) { // Listing all products which have a specific category.
+		public ICollection<ProductViewModel> List(string param_category) { // Listing all products which have a specific category.
+			Category category;
+			if (int.TryParse(param_category, out int id_category)) category = Supply.ByID<Category>(cache, context, id_category);
+			else category = Supply.ByName<Category>(cache, context, param_category);
 			ICollection<ProductViewModel> list_product_view_model = new List<ProductViewModel>();
-			foreach (int id in context.Products.Where(p => p.IDCategory == id_category).Select(p => p.ID).ToList()) {
+			foreach (int id in Supply.List<Product>(cache, context).Where(p => p.IDCategory == category.ID).Select(p => p.ID).ToList()) {
 				Product product = Supply.ByID<Product>(cache, context, id);
 				ProductViewModel product_view_model = mapper.Map<ProductViewModel>(product);
 				product_view_model.NameCategory = Supply.ByID<Category>(cache, context, product.IDCategory).Name;

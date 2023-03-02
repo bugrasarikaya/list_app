@@ -11,6 +11,11 @@ namespace list_api.Middlewares {
 		public async Task Invoke(HttpContext context) { // Handling exception.
 			try {
 				await next(context);
+			} catch (ForbiddenException fe) {
+				response = context.Response;
+				logger.LogError("A client error occurred.");
+				response.StatusCode = StatusCodes.Status403Forbidden;
+				await response.WriteAsync(fe.Message);
 			} catch (ConflictException ce) {
 				response = context.Response;
 				logger.LogError("A client error occurred.");

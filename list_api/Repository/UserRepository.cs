@@ -22,30 +22,37 @@ namespace list_api.Repository {
 			context.SaveChanges();
 			return user_created;
 		}
-		public void Delete(int id) { // Deleting a user.
-			User user_deleted = Supply.ByID<User>(cache, context, id);
-			Check.ForeignIDForConflict<List, User>(cache, context, id);
+		public void Delete(string param_user) { // Deleting a user.
+			User user_deleted;
+			if (int.TryParse(param_user, out int id_user)) user_deleted = Supply.ByID<User>(cache, context, id_user);
+			else user_deleted = Supply.ByName<User>(cache, context, param_user);
+			Check.ForeignIDForConflict<List, User>(cache, context, user_deleted.ID);
 			context.Users.Remove(user_deleted);
 			context.SaveChanges();
 		}
-		public UserViewModel Get(int id) { // Getting a user.
-			return mapper.Map<UserViewModel>(Supply.ByID<User>(cache, context, id));
+		public UserViewModel Get(string param_user) { // Getting a user.
+			if (int.TryParse(param_user, out int id_user)) return mapper.Map<UserViewModel>(Supply.ByID<User>(cache, context, id_user));
+			else return mapper.Map<UserViewModel>(Supply.ByName<User>(cache, context, param_user));
 		}
-		public ICollection<UserViewModel> List() { // Listing all categories.
+		public ICollection<UserViewModel> List() { // Listing all users.
 			ICollection<UserViewModel> list_user_view_model = new List<UserViewModel>();
-			foreach (int id in context.Users.Select(u => u.ID).ToList()) list_user_view_model.Add(mapper.Map<UserViewModel>(Supply.ByID<User>(cache, context, id)));
+			foreach (int id in Supply.List<User>(cache, context).OrderBy(u => u.Name).Select(u => u.ID).ToList()) list_user_view_model.Add(mapper.Map<UserViewModel>(Supply.ByID<User>(cache, context, id)));
 			return list_user_view_model;
 		}
-		public UserViewModel Update(int id, UserDTO user_dto) { // Updating a user.
-			User user_updated = Supply.ByID<User>(cache, context, id);
+		public UserViewModel Update(string param_user, UserDTO user_dto) { // Updating a user.
+			User user_updated;
+			if (int.TryParse(param_user, out int id_user)) user_updated = Supply.ByID<User>(cache, context, id_user);
+			else user_updated = Supply.ByName<User>(cache, context, param_user);
 			user_updated.IDRole = Check.ID<Role>(cache, context, user_dto.IDRole);
 			user_updated.Name = Check.NameForConflict<User>(cache, context, user_dto.Name);
 			user_updated.Password = user_dto.Password;
 			context.SaveChanges();
 			return mapper.Map<UserViewModel>(user_updated);
 		}
-		public UserViewModel Patch(int id, UserPatchDTO user_patch_dto) { // Patching a user.
-			User user_patched = Supply.ByID<User>(cache, context, id);
+		public UserViewModel Patch(string param_user, UserPatchDTO user_patch_dto) { // Patching a user.
+			User user_patched;
+			if (int.TryParse(param_user, out int id_user)) user_patched = Supply.ByID<User>(cache, context, id_user);
+			else user_patched = Supply.ByName<User>(cache, context, param_user);
 			if (user_patch_dto.IDRole != default(int)) user_patch_dto.IDRole = Check.ID<Role>(cache, context, user_patch_dto.IDRole);
 			if (!string.IsNullOrEmpty(user_patch_dto.Name)) user_patched.Name = Check.NameForConflict<List>(cache, context, user_patch_dto.Name);
 			if (!string.IsNullOrEmpty(user_patch_dto.Password)) user_patched.Password = user_patch_dto.Password;

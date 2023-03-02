@@ -21,35 +21,35 @@ namespace list_api.Controllers {
 				return Created(new Uri(Request.GetEncodedUrl() + "/" + user_created.ID), user_created);
 			} else return BadRequest(ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage));
 		}
-		[HttpDelete("{id:int}")]
-		public IActionResult Delete(int id) { // Responding with no content after deleting.
-			Validator id_validator = new Validator(id);
-			if (id_validator.IDValidator()) {
-				user_repository.Delete(id);
+		[HttpDelete("{param_user}")]
+		public IActionResult Delete(string param_user) { // Responding with no content after deleting.
+			Validator param_user_validator = new Validator(param_user);
+			if (param_user_validator.Validate()) {
+				user_repository.Delete(param_user);
 				return NoContent();
-			} else return BadRequest(id_validator.ListMessage);
+			} else return BadRequest(param_user_validator.ListMessage);
 		}
-		[HttpGet("{id:int}")]
-		public IActionResult Get(int id) { // Responding with a user after getting.
-			Validator id_validator = new Validator(id);
-			if (id_validator.IDValidator()) return Ok(user_repository.Get(id));
-			else return BadRequest(id_validator.ListMessage);
+		[HttpGet("{param_user}")]
+		public IActionResult Get(string param_user) { // Responding with a user after getting.
+			Validator param_user_validator = new Validator(param_user);
+			if (param_user_validator.Validate()) return Ok(user_repository.Get(param_user));
+			else return BadRequest(param_user_validator.ListMessage);
 		}
 		[HttpGet]
 		public IActionResult List() { // Responding with user list after getting.
 			return Ok(user_repository.List());
 		}
-		[HttpPut("{id:int}")]
-		public IActionResult Update(int id, [FromBody] UserDTO user_dto) { // Responding with a user after updating.
-			Validator id_validator = new Validator(id);
-			if (id_validator.IDValidator() || ModelState.IsValid) return Ok(user_repository.Update(id, user_dto));
-			else return BadRequest(id_validator.ListMessage.Concat(ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
+		[HttpPut("{param_user}")]
+		public IActionResult Update(string param_user, [FromBody] UserDTO user_dto) { // Responding with a user after updating.
+			Validator param_user_validator = new Validator(param_user);
+			if (param_user_validator.Validate() || ModelState.IsValid) return Ok(user_repository.Update(param_user, user_dto));
+			else return BadRequest(param_user_validator.ListMessage.Concat(ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
 		}
-		[HttpPatch("{id:int}")]
-		public IActionResult Patch(int id, [FromBody] UserPatchDTO user_patch_dto) { // Responding with a patched user after patching.
-			Validator id_validator = new Validator(id);
-			if (id_validator.IDValidator() || ModelState.IsValid) return Ok(user_repository.Patch(id, user_patch_dto));
-			else return BadRequest(id_validator.ListMessage.Concat(ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
+		[HttpPatch("{param_user}")]
+		public IActionResult Patch(string param_user, [FromBody] UserPatchDTO user_patch_dto) { // Responding with a patched user after patching.
+			Validator param_user_validator = new Validator(param_user);
+			if (param_user_validator.Validate() || ModelState.IsValid) return Ok(user_repository.Patch(param_user, user_patch_dto));
+			else return BadRequest(param_user_validator.ListMessage.Concat(ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
 		}
 	}
 }

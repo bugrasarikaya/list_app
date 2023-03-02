@@ -6,7 +6,9 @@
 		public Category Category { get; set; } = null!;
 		public ICollection<ProductViewModel> Products { get; set; } = null!;
 		public ClientUserViewModel User { get; set; } = null!;
-		public DateTime DateTime { get; set; }
+		public DateTime DateTimeCreating { get; set; }
+		public DateTime DateTimeUpdating { get; set; }
+		public DateTime DateTimeCompleting { get; set; }
 		public double TotalCost { get; set; }
 		public string Status { get; set; } = null!;
 	}

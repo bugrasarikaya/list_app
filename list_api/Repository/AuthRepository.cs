@@ -17,7 +17,7 @@ namespace list_api.Repository {
 			this.context = context;
 		}
 		public void Register(UserAuthDTO user_auth_dto) { // Creating a user.
-			context.Users.Add(new User() { IDRole = Check.ID<Role>(cache, context, 2), Name = Check.NameForConflict<User>(cache, context, user_auth_dto.Name), Password = user_auth_dto.Password });
+			context.Users.Add(new User() { IDRole = Check.ID<Role>(cache, context, (int)Enumerator.Role.User), Name = Check.NameForConflict<User>(cache, context, user_auth_dto.Name), Password = user_auth_dto.Password });
 			context.SaveChanges();
 		}
 		public Token LogIn(UserAuthDTO user_auth_dto) { // Creating a token for login.
