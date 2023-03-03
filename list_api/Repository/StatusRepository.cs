@@ -33,12 +33,14 @@ namespace list_api.Repository {
 			RedisCache.Recache<Status>(cache, context);
 		}
 		public StatusViewModel Get(string param_status) { // Getting a status.
-			if (int.TryParse(param_status, out int id_status)) return mapper.Map<StatusViewModel>(Supply.ByID<Status>(cache, context, id_status));
-			else return mapper.Map<StatusViewModel>(Supply.ByName<Status>(cache, context, param_status));
+			Status status;
+			if (int.TryParse(param_status, out int id_status)) status = Supply.ByID<Status>(cache, context, id_status);
+			else status = Supply.ByName<Status>(cache, context, param_status);
+			return Fill.ViewModel<StatusViewModel, Status>(cache, context, mapper, status);
 		}
 		public ICollection<StatusViewModel> List() { // Listing all statuses.
 			ICollection<StatusViewModel> list_status_view_model = new List<StatusViewModel>();
-			foreach (int id in Supply.List<Status>(cache, context).OrderBy(s => s.Name).Select(s => s.ID).ToList()) list_status_view_model.Add(mapper.Map<StatusViewModel>(Supply.ByID<Status>(cache, context, id)));
+			foreach (int id in Supply.List<Status>(cache, context).OrderBy(b => b.Name).Select(c => c.ID).ToList()) list_status_view_model.Add(Fill.ViewModel<StatusViewModel, Status>(cache, context, mapper, Supply.ByID<Status>(cache, context, id)));
 			return list_status_view_model;
 		}
 		public StatusViewModel Update(string param_status, StatusDTO status_dto) { // Updating a status.
@@ -47,7 +49,7 @@ namespace list_api.Repository {
 			else status_updated = Supply.ByName<Status>(cache, context, param_status);
 			status_updated.Name = Check.NameForConflict<Status>(cache, context, status_dto.Name);
 			context.SaveChanges();
-			return mapper.Map<StatusViewModel>(status_updated);
+			return Fill.ViewModel<StatusViewModel, Status>(cache, context, mapper, status_updated);
 		}
 		public StatusViewModel Patch(string param_status, StatusPatchDTO status_patch_dto) { // Patching a status.
 			Status status_patched;
@@ -55,7 +57,7 @@ namespace list_api.Repository {
 			else status_patched = Supply.ByName<Status>(cache, context, param_status);
 			if (!string.IsNullOrEmpty(status_patch_dto.Name)) status_patched.Name = Check.NameForConflict<List>(cache, context, status_patch_dto.Name);
 			context.SaveChanges();
-			return mapper.Map<StatusViewModel>(status_patched);
+			return Fill.ViewModel<StatusViewModel, Status>(cache, context, mapper, status_patched);
 		}
 	}
 }

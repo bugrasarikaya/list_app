@@ -20,7 +20,6 @@ namespace list_api.Repository {
 			Brand brand_created = new Brand() { Name = Check.NameForConflict<Brand>(cache, context, brand_dto.Name) };
 			context.Brands.Add(brand_created);
 			context.SaveChanges();
-			RedisCache.Recache<Brand>(cache, context);
 			return brand_created;
 		}
 		public void Delete(string param_brand) { // Deleting a brand.
@@ -30,15 +29,16 @@ namespace list_api.Repository {
 			Check.ForeignIDForConflict<Product, Brand>(cache, context, brand_deleted.ID);
 			context.Brands.Remove(brand_deleted);
 			context.SaveChanges();
-			RedisCache.Recache<Brand>(cache, context);
 		}
 		public BrandViewModel Get(string param_brand) { // Getting a brand.
-			if (int.TryParse(param_brand, out int id_brand)) return mapper.Map<BrandViewModel>(Supply.ByID<Brand>(cache, context, id_brand));
-			else return mapper.Map<BrandViewModel>(Supply.ByName<Brand>(cache, context, param_brand));
+			Brand brand;
+			if (int.TryParse(param_brand, out int id_brand)) brand = Supply.ByID<Brand>(cache, context, id_brand);
+			else brand = Supply.ByName<Brand>(cache, context, param_brand);
+			return Fill.ViewModel<BrandViewModel, Brand>(cache, context, mapper, brand);
 		}
 		public ICollection<BrandViewModel> List() { // Listing all brands.
 			ICollection<BrandViewModel> list_brand_view_model = new List<BrandViewModel>();
-			foreach (int id in Supply.List<Brand>(cache, context).OrderBy(b => b.Name).Select(c => c.ID).ToList()) list_brand_view_model.Add(mapper.Map<BrandViewModel>(Supply.ByID<Brand>(cache, context, id)));
+			foreach (int id in Supply.List<Brand>(cache, context).OrderBy(b => b.Name).Select(c => c.ID).ToList()) list_brand_view_model.Add(Fill.ViewModel<BrandViewModel, Brand>(cache, context, mapper, Supply.ByID<Brand>(cache, context, id)));
 			return list_brand_view_model;
 		}
 		public BrandViewModel Update(string param_brand, BrandDTO brand_dto) { // Updating a brand.
@@ -47,7 +47,7 @@ namespace list_api.Repository {
 			else brand_updated = Supply.ByName<Brand>(cache, context, param_brand);
 			brand_updated.Name = Check.NameForConflict<Brand>(cache, context, brand_dto.Name);
 			context.SaveChanges();
-			return mapper.Map<BrandViewModel>(brand_updated);
+			return Fill.ViewModel<BrandViewModel, Brand>(cache, context, mapper, brand_updated);
 		}
 		public BrandViewModel Patch(string param_brand, BrandPatchDTO brand_patch_dto) { // Patching a brand.
 			Brand brand_patched;
@@ -55,7 +55,7 @@ namespace list_api.Repository {
 			else brand_patched = Supply.ByName<Brand>(cache, context, param_brand);
 			if (!string.IsNullOrEmpty(brand_patch_dto.Name)) brand_patched.Name = Check.NameForConflict<List>(cache, context, brand_patch_dto.Name);
 			context.SaveChanges();
-			return mapper.Map<BrandViewModel>(brand_patched);
+			return Fill.ViewModel<BrandViewModel, Brand>(cache, context, mapper, brand_patched);
 		}
 	}
 }

@@ -29,19 +29,11 @@ namespace list_api.Repository {
 			context.SaveChanges();
 		}
 		public ProductViewModel Get(int id) { // Getting a product.
-			Product product = Supply.ByID<Product>(cache, context, id);
-			ProductViewModel product_view_model = mapper.Map<ProductViewModel>(product);
-			product_view_model.NameCategory = Supply.ByID<Category>(cache, context, product.IDCategory).Name;
-			return product_view_model;
+			return Fill.ViewModel<ProductViewModel, Product>(cache, context, mapper, Supply.ByID<Product>(cache, context, id));
 		}
 		public ICollection<ProductViewModel> List() { // Listing all products.
 			ICollection<ProductViewModel> list_product_view_model = new List<ProductViewModel>();
-			foreach (int id in Supply.List<Product>(cache, context).OrderBy(p => p.Name).Select(p => p.ID).ToList()) {
-				Product product = Supply.ByID<Product>(cache, context, id);
-				ProductViewModel product_view_model = mapper.Map<ProductViewModel>(product);
-				product_view_model.NameCategory = Supply.ByID<Category>(cache, context, product.IDCategory).Name;
-				list_product_view_model.Add(product_view_model);
-			}
+			foreach (int id in Supply.List<Product>(cache, context).OrderBy(p => p.Name).Select(p => p.ID).ToList()) list_product_view_model.Add(Fill.ViewModel<ProductViewModel, Product>(cache, context, mapper, Supply.ByID<Product>(cache, context, id)));
 			return list_product_view_model;
 		}
 		public ICollection<ProductViewModel> List(string param_category) { // Listing all products which have a specific category.
@@ -49,12 +41,7 @@ namespace list_api.Repository {
 			if (int.TryParse(param_category, out int id_category)) category = Supply.ByID<Category>(cache, context, id_category);
 			else category = Supply.ByName<Category>(cache, context, param_category);
 			ICollection<ProductViewModel> list_product_view_model = new List<ProductViewModel>();
-			foreach (int id in Supply.List<Product>(cache, context).Where(p => p.IDCategory == category.ID).Select(p => p.ID).ToList()) {
-				Product product = Supply.ByID<Product>(cache, context, id);
-				ProductViewModel product_view_model = mapper.Map<ProductViewModel>(product);
-				product_view_model.NameCategory = Supply.ByID<Category>(cache, context, product.IDCategory).Name;
-				list_product_view_model.Add(product_view_model);
-			}
+			foreach (int id in Supply.List<Product>(cache, context).Where(p => p.IDCategory == category.ID).Select(p => p.ID).ToList()) list_product_view_model.Add(Fill.ViewModel<ProductViewModel, Product>(cache, context, mapper, Supply.ByID<Product>(cache, context, id)));
 			return list_product_view_model;
 		}
 		public ProductViewModel Update(int id, ProductDTO product_dto) { // Updating a product.
@@ -64,9 +51,7 @@ namespace list_api.Repository {
 			product_updated.Description = product_dto.Description;
 			product_updated.Price = product_dto.Price;
 			context.SaveChanges();
-			ProductViewModel product_view_model = mapper.Map<ProductViewModel>(product_updated);
-			product_view_model.NameCategory = Supply.ByID<Category>(cache, context, product_updated.IDCategory).Name;
-			return product_view_model;
+			return Fill.ViewModel<ProductViewModel, Product>(cache, context, mapper, product_updated);
 		}
 		public ProductViewModel Patch(int id, ProductPatchDTO product_patch_dto) { // Patching a product.
 			Product product_patched = Supply.ByID<Product>(cache, context, id);
@@ -76,7 +61,7 @@ namespace list_api.Repository {
 			context.SaveChanges();
 			ProductViewModel product_view_model = mapper.Map<ProductViewModel>(product_patched);
 			product_view_model.NameCategory = Supply.ByID<Category>(cache, context, product_patched.IDCategory).Name;
-			return product_view_model;
+			return Fill.ViewModel<ProductViewModel, Product>(cache, context, mapper, product_patched);
 		}
 	}
 }

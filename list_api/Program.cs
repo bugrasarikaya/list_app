@@ -10,6 +10,7 @@ using list_api.Repository.Interface;
 using list_api.Repository;
 using list_api.Middlewares;
 using System.Reflection;
+using list_api.Services;
 namespace list_api {
 	public class Program { // Constructing.
 		public static void Main(string[] args) {
@@ -24,6 +25,8 @@ namespace list_api {
 			builder.Services.AddScoped<IListApiDbContext>(provider => provider.GetService<ListApiDbContext>()!);
 			builder.Services.AddDbContext<ListApiDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DbConnection")));
 			builder.Services.AddStackExchangeRedisCache(options => options.Configuration = configuration["RedisCacheUrl"]);
+			builder.Services.Configure<RabbitMQConfiguration>(rabbitmq_configuration => configuration.GetSection(nameof(RabbitMQConfiguration)).Bind(rabbitmq_configuration));
+			builder.Services.AddScoped<IMessageService, RabbitMQService>();
 			builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 			builder.Services.AddFluentValidationAutoValidation();
 			builder.Services.AddFluentValidationClientsideAdapters();

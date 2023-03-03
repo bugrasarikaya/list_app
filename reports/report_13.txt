@@ -1,0 +1,26 @@
+Thanks to implementing previous view model filler method, almost half of all code lines, were shortened.
+4 webpages [1] [2] [3] [4] about RabbitMQ, were examined.
+"rabbitmq-server-3.11.10.exe" file was downloaded from a official webpage [5] for installing RabbitMQ to Windows.
+Erlang language was downloaded from a webpage [6] and it was installed because it was a requirement for RabbitMQ.
+By benefiting a webpage [7] an atttemp was started to initiate RabbitMQ.
+"rabbitmq-plugins enable rabbitmq_management" did not work but after restarting PC, interface worked.
+It was learnt that default username and password for RabbitMQ, are guest and guest, on a webpage [8].
+On a webpage [9], it was learnt that RabbitMQ has a custom database.
+"RabbitMQ.Client.Core.DependencyInjection" was tried to be installed but its codes form its source [10], did not work.
+About injecting RabbitMQ, a beneficial code was found in a webpage [11].
+A webpage [12] about RabbitMQ, was read.
+Examples of "yield return" concept, were examined on a document [13].
+By benefiting examined sources [1] [3] [4] [11] [12], a message service was added.
+[1] Taner Saydam, https://youtu.be/UI5jFgr2vNw, 9 November 2022.
+[2] https://www.rabbitmq.com/tutorials/tutorial-one-dotnet.html
+[3] https://www.tutlane.com/tutorial/rabbitmq/csharp-publish-message-to-rabbitmq-queue
+[4] Code Maze, https://code-maze.com/aspnetcore-rabbitmq/, Mar 29, 2022.
+[5] https://www.rabbitmq.com/install-windows.html
+[6] https://www.erlang.org/downloads
+[7] Technical Babaji, https://youtu.be/V9DWKbalbWQ, 16 Oca 2020.
+[8] https://onlinehelp.coveo.com/en/ces/7.0/administrator/changing_the_rabbitmq_administrator_password.htm#:~:text=Note%3A%20The%20default%20administrator%20username,at%20the%20top%2C%20click%20Admin.
+[9] Gabriele Santomaggio, Jim G., https://stackoverflow.com/questions/38444425/how-does-rabbitmq-actually-store-the-message-physically, answered Jul 19, 2016 at 6:21, edited Apr 1, 2019 at 18:34.
+[10] AntonyVorontsov, https://github.com/AntonyVorontsov/RabbitMQ.Client.Core.DependencyInjection, Mar 24, 2021.
+[11] Farhad Zamani, https://dotnetdocs.ir/Post/43/implementing-rabbitmq-in-net-core, April 30, 2021 
+[12] Feyyaz Acet, https://feyyazacet.medium.com/https-medium-com-feyyazacet-net-core-ile-rabbitmq-ya-giris-a6378125b0c3, May 23, 2019.
+[13] https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/yield#code-try-0, 12/02/2022.

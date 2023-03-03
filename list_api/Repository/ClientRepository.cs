@@ -6,16 +6,19 @@ using list_api.Models.DTOs;
 using list_api.Models.ViewModels;
 using list_api.Repository.Common;
 using list_api.Repository.Interface;
+using list_api.Services;
 namespace list_api.Repository {
 	public class ClientRepository : IClientRepository {
 		public int IDUser { get; set; }
 		private readonly IDistributedCache cache;
 		private readonly IListApiDbContext context;
 		private readonly IMapper mapper;
-		public ClientRepository(IDistributedCache cache, IListApiDbContext context, IMapper mapper) { // Constructing.
+		private readonly IMessageService messager;
+		public ClientRepository(IDistributedCache cache, IListApiDbContext context, IMapper mapper, IMessageService messager) { // Constructing.
 			this.cache = cache;
 			this.context = context;
 			this.mapper = mapper;
+			this.messager = messager;
 		}
 		public List CreateList(ClientListDTO list_client_dto) { // Creating a list of client.
 			List list_created = new List() { IDCategory = Check.ID<Category>(cache, context, list_client_dto.IDCategory), IDStatus = Supply.ByID<Status>(cache, context, (int)Enumerator.Status.Uncompleted).ID, IDUser = Check.ID<User>(cache, context, IDUser), Name = Check.NameForConflict<List>(cache, context, list_client_dto.Name, IDUser), Description = list_client_dto.Description, DateTimeCreating = DateTime.Now };
@@ -36,24 +39,11 @@ namespace list_api.Repository {
 			List list;
 			if (int.TryParse(param_list, out int id_list)) list = Supply.ByID<List>(cache, context, id_list);
 			else list = Supply.ByName<List>(cache, context, param_list, IDUser);
-			ListViewModel list_view_model = mapper.Map<ListViewModel>(list);
-			list_view_model.Category = Supply.ByID<Category>(cache, context, list.IDCategory);
-			list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<Product>(cache, context).Where(p => Supply.List<ListProduct>(cache, context).Any(lp => lp.IDProduct == p.ID)).ToList());
-			list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<ListProduct>(cache, context).Where(lp => Supply.List<Product>(cache, context).Any(p => p.ID == lp.IDProduct)).ToList());
-			list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(cache, context, list.IDUser));
-			return list_view_model;
+			return Fill.ViewModel<ListViewModel, List>(cache, context, mapper, list);
 		}
 		public ICollection<ListViewModel> ListLists() { // Listing all lists of client.
 			ICollection<ListViewModel> list_list_view_model = new List<ListViewModel>();
-			foreach (int id in Supply.List<List>(cache, context).Where(l => l.IDUser == IDUser).OrderByDescending(l => l.DateTimeUpdating).Select(l => l.ID).ToList()) {
-				List list = Supply.ByID<List>(cache, context, id);
-				ListViewModel list_view_model = mapper.Map<ListViewModel>(list);
-				list_view_model.Category = Supply.ByID<Category>(cache, context, list.IDCategory);
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<Product>(cache, context).Where(p => Supply.List<ListProduct>(cache, context).Any(lp => lp.IDProduct == p.ID)).ToList());
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<ListProduct>(cache, context).Where(lp => Supply.List<Product>(cache, context).Any(p => p.ID == lp.IDProduct)).ToList());
-				list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(cache, context, list.IDUser));
-				list_list_view_model.Add(list_view_model);
-			}
+			foreach (int id in Supply.List<List>(cache, context).Where(l => l.IDUser == IDUser).OrderByDescending(l => l.DateTimeUpdating).Select(l => l.ID).ToList()) list_list_view_model.Add(Fill.ViewModel<ListViewModel, List>(cache, context, mapper, Supply.ByID<List>(cache, context, id)));
 			return list_list_view_model;
 		}
 		public ICollection<ListViewModel> ListListsByCategory(string param_category) { // Listing all lists of client by category.
@@ -61,54 +51,22 @@ namespace list_api.Repository {
 			if (int.TryParse(param_category, out int id_category)) category = Supply.ByID<Category>(cache, context, id_category);
 			else category = Supply.ByName<Category>(cache, context, param_category);
 			ICollection<ListViewModel> list_list_view_model = new List<ListViewModel>();
-			foreach (int id in Supply.List<List>(cache, context).Where(l => l.IDCategory == category.ID && l.IDUser == IDUser).OrderBy(l => Supply.List<Category>(cache, context).Where(c => c.ID == l.ID).Select(c => c.Name)).ThenByDescending(l => l.DateTimeUpdating).Select(l => l.ID).ToList()) {
-				List list = Supply.ByID<List>(cache, context, id);
-				ListViewModel list_view_model = mapper.Map<ListViewModel>(list);
-				list_view_model.Category = Supply.ByID<Category>(cache, context, list.IDCategory);
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<Product>(cache, context).Where(p => Supply.List<ListProduct>(cache, context).Any(lp => lp.IDProduct == p.ID)).ToList());
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<ListProduct>(cache, context).Where(lp => Supply.List<Product>(cache, context).Any(p => p.ID == lp.IDProduct)).ToList());
-				list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(cache, context, list.IDUser));
-				list_list_view_model.Add(list_view_model);
-			}
+			foreach (int id in Supply.List<List>(cache, context).Where(l => l.IDCategory == category.ID && l.IDUser == IDUser).OrderBy(l => Supply.List<Category>(cache, context).Where(c => c.ID == l.ID).Select(c => c.Name)).ThenByDescending(l => l.DateTimeUpdating).Select(l => l.ID).ToList()) list_list_view_model.Add(Fill.ViewModel<ListViewModel, List>(cache, context, mapper, Supply.ByID<List>(cache, context, id)));
 			return list_list_view_model;
 		}
 		public ICollection<ListViewModel> ListByDateTimeCompleting(DateTime date_time_completing) { // // Listing all lists of client, which have a specific creating date time.
 			ICollection<ListViewModel> list_list_view_model = new List<ListViewModel>();
-			foreach (int id in Supply.List<List>(cache, context).Where(l => l.DateTimeCompleting == date_time_completing && l.IDUser == IDUser).OrderByDescending(l => l.DateTimeCompleting).Select(l => l.ID).ToList()) {
-				List list = Supply.ByID<List>(cache, context, id);
-				ListViewModel list_view_model = mapper.Map<ListViewModel>(list);
-				list_view_model.Category = Supply.ByID<Category>(cache, context, list.IDCategory);
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<Product>(cache, context).Where(p => Supply.List<ListProduct>(cache, context).Any(lp => lp.IDProduct == p.ID)).ToList());
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<ListProduct>(cache, context).Where(lp => Supply.List<Product>(cache, context).Any(p => p.ID == lp.IDProduct)).ToList());
-				list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(cache, context, list.IDUser));
-				list_list_view_model.Add(list_view_model);
-			}
+			foreach (int id in Supply.List<List>(cache, context).Where(l => l.DateTimeCompleting == date_time_completing && l.IDUser == IDUser).OrderByDescending(l => l.DateTimeCompleting).Select(l => l.ID).ToList()) list_list_view_model.Add(Fill.ViewModel<ListViewModel, List>(cache, context, mapper, Supply.ByID<List>(cache, context, id)));
 			return list_list_view_model;
 		}
 		public ICollection<ListViewModel> ListByDateTimeCreating(DateTime date_time_creating) { // // Listing all lists of client, which have a specific creating date time.
 			ICollection<ListViewModel> list_list_view_model = new List<ListViewModel>();
-			foreach (int id in Supply.List<List>(cache, context).Where(l => l.DateTimeCreating == date_time_creating && l.IDUser == IDUser).OrderByDescending(l => l.DateTimeCreating).Select(l => l.ID).ToList()) {
-				List list = Supply.ByID<List>(cache, context, id);
-				ListViewModel list_view_model = mapper.Map<ListViewModel>(list);
-				list_view_model.Category = Supply.ByID<Category>(cache, context, list.IDCategory);
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<Product>(cache, context).Where(p => Supply.List<ListProduct>(cache, context).Any(lp => lp.IDProduct == p.ID)).ToList());
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<ListProduct>(cache, context).Where(lp => Supply.List<Product>(cache, context).Any(p => p.ID == lp.IDProduct)).ToList());
-				list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(cache, context, list.IDUser));
-				list_list_view_model.Add(list_view_model);
-			}
+			foreach (int id in Supply.List<List>(cache, context).Where(l => l.DateTimeCreating == date_time_creating && l.IDUser == IDUser).OrderByDescending(l => l.DateTimeCreating).Select(l => l.ID).ToList()) list_list_view_model.Add(Fill.ViewModel<ListViewModel, List>(cache, context, mapper, Supply.ByID<List>(cache, context, id)));
 			return list_list_view_model;
 		}
 		public ICollection<ListViewModel> ListByDateTimeUpdating(DateTime date_time_updating) { // // Listing all lists of client, which have a specific updating date time.
 			ICollection<ListViewModel> list_list_view_model = new List<ListViewModel>();
-			foreach (int id in Supply.List<List>(cache, context).Where(l => l.DateTimeUpdating == date_time_updating && l.IDUser == IDUser).OrderByDescending(l => l.DateTimeUpdating).Select(l => l.ID).ToList()) {
-				List list = Supply.ByID<List>(cache, context, id);
-				ListViewModel list_view_model = mapper.Map<ListViewModel>(list);
-				list_view_model.Category = Supply.ByID<Category>(cache, context, list.IDCategory);
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<Product>(cache, context).Where(p => Supply.List<ListProduct>(cache, context).Any(lp => lp.IDProduct == p.ID)).ToList());
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<ListProduct>(cache, context).Where(lp => Supply.List<Product>(cache, context).Any(p => p.ID == lp.IDProduct)).ToList());
-				list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(cache, context, list.IDUser));
-				list_list_view_model.Add(list_view_model);
-			}
+			foreach (int id in Supply.List<List>(cache, context).Where(l => l.DateTimeUpdating == date_time_updating && l.IDUser == IDUser).OrderByDescending(l => l.DateTimeUpdating).Select(l => l.ID).ToList()) list_list_view_model.Add(Fill.ViewModel<ListViewModel, List>(cache, context, mapper, Supply.ByID<List>(cache, context, id)));
 			return list_list_view_model;
 		}
 		public ICollection<ListViewModel> ListByCategoryAndDateTimeCompleting(string param_category, DateTime date_time_completing) { // Listing all lists of client which have a specific category and completing date time.
@@ -116,15 +74,7 @@ namespace list_api.Repository {
 			if (int.TryParse(param_category, out int id_category)) category = Supply.ByID<Category>(cache, context, id_category);
 			else category = Supply.ByName<Category>(cache, context, param_category);
 			ICollection<ListViewModel> list_list_view_model = new List<ListViewModel>();
-			foreach (int id in Supply.List<List>(cache, context).Where(l => l.IDCategory == category.ID && l.DateTimeCompleting == date_time_completing && l.IDUser == IDUser).OrderBy(l => Supply.List<Category>(cache, context).Where(c => c.ID == l.ID).Select(c => c.Name)).ThenByDescending(l => l.DateTimeCompleting).Select(l => l.ID).ToList()) {
-				List list = Supply.ByID<List>(cache, context, id);
-				ListViewModel list_view_model = mapper.Map<ListViewModel>(list);
-				list_view_model.Category = Supply.ByID<Category>(cache, context, list.IDCategory);
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<Product>(cache, context).Where(p => Supply.List<ListProduct>(cache, context).Any(lp => lp.IDProduct == p.ID)).ToList());
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<ListProduct>(cache, context).Where(lp => Supply.List<Product>(cache, context).Any(p => p.ID == lp.IDProduct)).ToList());
-				list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(cache, context, list.IDUser));
-				list_list_view_model.Add(list_view_model);
-			}
+			foreach (int id in Supply.List<List>(cache, context).Where(l => l.IDCategory == category.ID && l.DateTimeCompleting == date_time_completing && l.IDUser == IDUser).OrderBy(l => Supply.List<Category>(cache, context).Where(c => c.ID == l.ID).Select(c => c.Name)).ThenByDescending(l => l.DateTimeCompleting).Select(l => l.ID).ToList()) list_list_view_model.Add(Fill.ViewModel<ListViewModel, List>(cache, context, mapper, Supply.ByID<List>(cache, context, id)));
 			return list_list_view_model;
 		}
 		public ICollection<ListViewModel> ListByCategoryAndDateTimeCreating(string param_category, DateTime date_time_creating) { // Listing all lists of client which have a specific category and creating date time.
@@ -132,15 +82,7 @@ namespace list_api.Repository {
 			if (int.TryParse(param_category, out int id_category)) category = Supply.ByID<Category>(cache, context, id_category);
 			else category = Supply.ByName<Category>(cache, context, param_category);
 			ICollection<ListViewModel> list_list_view_model = new List<ListViewModel>();
-			foreach (int id in Supply.List<List>(cache, context).Where(l => l.IDCategory == category.ID && l.DateTimeCreating == date_time_creating && l.IDUser == IDUser).OrderBy(l => Supply.List<Category>(cache, context).Where(c => c.ID == l.ID).Select(c => c.Name)).ThenByDescending(l => l.DateTimeCreating).Select(l => l.ID).ToList()) {
-				List list = Supply.ByID<List>(cache, context, id);
-				ListViewModel list_view_model = mapper.Map<ListViewModel>(list);
-				list_view_model.Category = Supply.ByID<Category>(cache, context, list.IDCategory);
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<Product>(cache, context).Where(p => Supply.List<ListProduct>(cache, context).Any(lp => lp.IDProduct == p.ID)).ToList());
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<ListProduct>(cache, context).Where(lp => Supply.List<Product>(cache, context).Any(p => p.ID == lp.IDProduct)).ToList());
-				list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(cache, context, list.IDUser));
-				list_list_view_model.Add(list_view_model);
-			}
+			foreach (int id in Supply.List<List>(cache, context).Where(l => l.IDCategory == category.ID && l.DateTimeCreating == date_time_creating && l.IDUser == IDUser).OrderBy(l => Supply.List<Category>(cache, context).Where(c => c.ID == l.ID).Select(c => c.Name)).ThenByDescending(l => l.DateTimeCreating).Select(l => l.ID).ToList()) list_list_view_model.Add(Fill.ViewModel<ListViewModel, List>(cache, context, mapper, Supply.ByID<List>(cache, context, id)));
 			return list_list_view_model;
 		}
 		public ICollection<ListViewModel> ListByCategoryAndDateTimeUpdating(string param_category, DateTime date_time_updating) { // Listing all lists of client which have a specific category and updating date time.
@@ -148,15 +90,7 @@ namespace list_api.Repository {
 			if (int.TryParse(param_category, out int id_category)) category = Supply.ByID<Category>(cache, context, id_category);
 			else category = Supply.ByName<Category>(cache, context, param_category);
 			ICollection<ListViewModel> list_list_view_model = new List<ListViewModel>();
-			foreach (int id in Supply.List<List>(cache, context).Where(l => l.IDCategory == category.ID && l.DateTimeUpdating == date_time_updating && l.IDUser == IDUser).OrderBy(l => Supply.List<Category>(cache, context).Where(c => c.ID == l.ID).Select(c => c.Name)).ThenByDescending(l => l.DateTimeUpdating).Select(l => l.ID).ToList()) {
-				List list = Supply.ByID<List>(cache, context, id);
-				ListViewModel list_view_model = mapper.Map<ListViewModel>(list);
-				list_view_model.Category = Supply.ByID<Category>(cache, context, list.IDCategory);
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<Product>(cache, context).Where(p => Supply.List<ListProduct>(cache, context).Any(lp => lp.IDProduct == p.ID)).ToList());
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<ListProduct>(cache, context).Where(lp => Supply.List<Product>(cache, context).Any(p => p.ID == lp.IDProduct)).ToList());
-				list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(cache, context, list.IDUser));
-				list_list_view_model.Add(list_view_model);
-			}
+			foreach (int id in Supply.List<List>(cache, context).Where(l => l.IDCategory == category.ID && l.DateTimeUpdating == date_time_updating && l.IDUser == IDUser).OrderBy(l => Supply.List<Category>(cache, context).Where(c => c.ID == l.ID).Select(c => c.Name)).ThenByDescending(l => l.DateTimeUpdating).Select(l => l.ID).ToList()) list_list_view_model.Add(Fill.ViewModel<ListViewModel, List>(cache, context, mapper, Supply.ByID<List>(cache, context, id)));
 			return list_list_view_model;
 		}
 		public ListViewModel UpdateList(string param_list, ClientListDTO list_client_dto) { // Updating a list of client.
@@ -168,7 +102,7 @@ namespace list_api.Repository {
 			list_updated.Name = Check.NameForConflict<List>(cache, context, list_client_dto.Name, IDUser);
 			list_updated.Description = list_client_dto.Description;
 			context.SaveChanges();
-			return mapper.Map<ListViewModel>(list_updated);
+			return Fill.ViewModel<ListViewModel, List>(cache, context, mapper, list_updated);
 		}
 		public ListViewModel PatchList(string param_list, ClientListPatchDTO list_client_patch_dto) { // Patching a list of client.
 			List list_patched;
@@ -182,7 +116,9 @@ namespace list_api.Repository {
 			list_patched.DateTimeUpdating = DateTime.Now;
 			if (list_patched.IDStatus == Supply.ByID<Status>(cache, context, (int)Enumerator.Status.Completed).ID) list_patched.DateTimeCompleting = list_patched.DateTimeUpdating;
 			context.SaveChanges();
-			return mapper.Map<ListViewModel>(list_patched);
+			ListViewModel list_view_model = Fill.ViewModel<ListViewModel, List>(cache, context, mapper, list_patched);
+			if (list_patched.IDStatus == Supply.ByID<Status>(cache, context, (int)Enumerator.Status.Completed).ID) messager.Publish(list_view_model);
+			return list_view_model;
 		}
 		public ListViewModel AddProduct(ListProductDTO list_product_dto) { // Adding a product to a list of client.
 			List list = Supply.ByID<List>(cache, context, list_product_dto.IDList);
@@ -194,7 +130,7 @@ namespace list_api.Repository {
 			list.TotalCost += product.Price * list_product_dto.Quantity;
 			list.DateTimeUpdating = DateTime.Now;
 			context.SaveChanges();
-			return GetList(list_product_dto.IDList.ToString());
+			return Fill.ViewModel<ListViewModel, List>(cache, context, mapper, list);
 		}
 		public ListViewModel RemoveProduct(string param_list, int id_product) { // Removing a product from a list of client.
 			List list;
@@ -207,25 +143,24 @@ namespace list_api.Repository {
 			list.DateTimeUpdating = DateTime.Now;
 			context.ListProducts.Remove(list_product_deleted);
 			context.SaveChanges();
-			return GetList(id_list.ToString());
+			return Fill.ViewModel<ListViewModel, List>(cache, context, mapper, list);
 		}
 		public ClientUserViewModel GetUser() { // Getting a user info of client.
-			User user = Supply.ByID<User>(cache, context, IDUser);
-			return mapper.Map<ClientUserViewModel>(user);
+			return Fill.ViewModel<ClientUserViewModel, User>(cache, context, mapper, Supply.ByID<User>(cache, context, IDUser));
 		}
 		public ClientUserViewModel UpdateUser(ClientUserDTO user_client_dto) { // Updating user info of client.
 			User user_updated = Supply.ByID<User>(cache, context, IDUser);
 			user_updated.Name = Check.NameForConflict<User>(cache, context, user_client_dto.Name);
 			user_updated.Password = user_client_dto.Password;
 			context.SaveChanges();
-			return mapper.Map<ClientUserViewModel>(user_updated);
+			return Fill.ViewModel<ClientUserViewModel, User>(cache, context, mapper, user_updated);
 		}
 		public ClientUserViewModel PatchUser(ClientUserPatchDTO client_user_patch_dto) { // Patching a user.
 			User user_patched = Supply.ByID<User>(cache, context, IDUser);
 			if (!string.IsNullOrEmpty(client_user_patch_dto.Name)) user_patched.Name = Check.NameForConflict<List>(cache, context, client_user_patch_dto.Name);
 			if (!string.IsNullOrEmpty(client_user_patch_dto.Password)) user_patched.Password = client_user_patch_dto.Password;
 			context.SaveChanges();
-			return mapper.Map<ClientUserViewModel>(user_patched);
+			return Fill.ViewModel<ClientUserViewModel, User>(cache, context, mapper, user_patched);
 		}
 	}
 }

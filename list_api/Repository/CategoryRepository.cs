@@ -34,12 +34,14 @@ namespace list_api.Repository {
 			RedisCache.Recache<Category>(cache, context);
 		}
 		public CategoryViewModel Get(string param_category) { // Getting a category.
-			if (int.TryParse(param_category, out int id_category)) return mapper.Map<CategoryViewModel>(Supply.ByID<Category>(cache, context, id_category));
-			else return mapper.Map<CategoryViewModel>(Supply.ByName<Category>(cache, context, param_category));
+			Category category;
+			if (int.TryParse(param_category, out int id_category)) category = Supply.ByID<Category>(cache, context, id_category);
+			else category = Supply.ByName<Category>(cache, context, param_category);
+			return Fill.ViewModel<CategoryViewModel, Category>(cache, context, mapper, category);
 		}
 		public ICollection<CategoryViewModel> List() { // Listing all categories.
 			ICollection<CategoryViewModel> list_category_view_model = new List<CategoryViewModel>();
-			foreach (int id in Supply.List<Category>(cache, context).OrderBy(c => c.Name).Select(c => c.ID).ToList()) list_category_view_model.Add(mapper.Map<CategoryViewModel>(Supply.ByID<Category>(cache, context, id)));
+			foreach (int id in Supply.List<Category>(cache, context).OrderBy(b => b.Name).Select(c => c.ID).ToList()) list_category_view_model.Add(Fill.ViewModel<CategoryViewModel, Category>(cache, context, mapper, Supply.ByID<Category>(cache, context, id)));
 			return list_category_view_model;
 		}
 		public CategoryViewModel Update(string param_category, CategoryDTO category_dto) { // Updating a category.
@@ -48,7 +50,7 @@ namespace list_api.Repository {
 			else category_updated = Supply.ByName<Category>(cache, context, param_category);
 			category_updated.Name = Check.NameForConflict<Category>(cache, context, category_dto.Name);
 			context.SaveChanges();
-			return mapper.Map<CategoryViewModel>(category_updated);
+			return Fill.ViewModel<CategoryViewModel, Category>(cache, context, mapper, category_updated);
 		}
 		public CategoryViewModel Patch(string param_category, CategoryPatchDTO category_patch_dto) { // Patching a category.
 			Category category_patched;
@@ -56,7 +58,7 @@ namespace list_api.Repository {
 			else category_patched = Supply.ByName<Category>(cache, context, param_category);
 			if (!string.IsNullOrEmpty(category_patch_dto.Name)) category_patched.Name = Check.NameForConflict<List>(cache, context, category_patch_dto.Name);
 			context.SaveChanges();
-			return mapper.Map<CategoryViewModel>(category_patched);
+			return Fill.ViewModel<CategoryViewModel, Category>(cache, context, mapper, category_patched);
 		}
 	}
 }
