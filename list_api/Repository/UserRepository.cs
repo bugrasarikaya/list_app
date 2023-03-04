@@ -6,18 +6,21 @@ using list_api.Models.DTOs;
 using list_api.Models.ViewModels;
 using list_api.Repository.Common;
 using list_api.Repository.Interface;
+using list_api.Security;
 namespace list_api.Repository {
 	public class UserRepository : IUserRepository {
 		private readonly IDistributedCache cache;
+		private readonly IEncryptor encryptor;
 		private readonly IListApiDbContext context;
 		private readonly IMapper mapper;
-		public UserRepository(IDistributedCache cache, IListApiDbContext context, IMapper mapper) { // Constructing.
+		public UserRepository(IDistributedCache cache, IEncryptor encryptor, IListApiDbContext context, IMapper mapper) { // Constructing.
 			this.cache = cache;
+			this.encryptor = encryptor;
 			this.context = context;
 			this.mapper = mapper;
 		}
 		public User Create(UserDTO user_dto) { // Creating a user.
-			User user_created = new User() { IDRole = Check.ID<Role>(cache, context, user_dto.IDRole), Name = Check.NameForConflict<User>(cache, context, user_dto.Name), Password = user_dto.Password };
+			User user_created = new User() { IDRole = Check.ID<Role>(cache, context, user_dto.IDRole), Name = Check.NameForConflict<User>(cache, context, user_dto.Name), Password = encryptor.Encrpyt(user_dto.Password) };
 			context.Users.Add(user_created);
 			context.SaveChanges();
 			return user_created;

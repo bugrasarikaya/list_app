@@ -1,0 +1,29 @@
+An attempt was started to impelement code first approach for configuring database, by benefiting a project [1].
+Any size value for JWT Bearer token, could not be found on internet.
+A webpage [2] about Basee64 vs. MD5, was read briefly.
+Afer reading 4 webpages about MD5 and SHA algorithms, SHA256 was chosen because it's more safer than MD5.
+A encryptor was written by benefiting two examines webpages [5] [6].
+In a webpage [7], it was remembered that "x2" statement in "ToString" method, is for formating lowercase hexadecimal.
+On a webpage [8], it was understood that lowercase hexadecimal format of MD5 string, is more preferable.
+Thanks to CA1850 warning, "SHA256.HashData" method was used instead of "SHA256.Create().ComputeHash()" method for decreasing code length.
+Encryptor class was injected on "Program.cs" and encrypting was applied to related classes.
+On a webpage [9], it was learnt that character count of SHA256 hash, was 64 and it was set on user password configuration for database.
+Thanks to an examined 3 webpages [10] [11] [12], table relations were added into database configuration.
+While trying to migrate, "Introducing FOREIGN KEY constraint 'FK_ListProducts_Products_IDProduct' on table 'ListProducts' may cause cycles or multiple cascade paths. Specify ON DELETE NO ACTION or ON UPDATE NO ACTION, or modify other FOREIGN KEY constraints. Could not create constraint or index. See previous errors." error occurred.
+To fix error, "OnDelete(DeleteBehavior.Restrict)" method which is found in a webpage [13], was used but it did not work.
+By benefiting two webpages webpages [14] [15] writing "OnDelete(DeleteBehavior.ClientSetNull)" method worked nevertheless it was thought the solution is not right solution.
+[1] bugrasarikaya, https://github.com/bugrasarikaya/techcareer.net_tasks/tree/main/net_bootcamp/task_final, 23 January 2023.
+[2] pkaeding, https://stackoverflow.com/questions/3993937/which-is-best-encryption-method-base-64-or-md5, Oct 22, 2010 at 18:50.
+[3] Mohammed Ibrahim, https://www.c-sharpcorner.com/UploadFile/f25f9a/simple-login-form-using-md5-hash-algorithm/, Sep 14, 2015.
+[4] https://www.godo.dev/tutorials/csharp-md5/,  Dec 8, 2016.
+[5] https://www.godo.dev/tutorials/csharp-string-hash/, Sep 14, 2018
+[6] https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.sha256?view=net-7.0
+[7] TypeIA, Hakan Fıstık, https://stackoverflow.com/questions/20750062/what-is-the-meaning-of-tostringx2, answered Dec 23, 2013 at 19:40, edited Jan 23 at 10:28.
+[8] https://stackoverflow.com/questions/45153520/are-md5-hashes-always-either-capital-or-lowercase
+[9] https://stackoverflow.com/questions/3064133/will-a-sha256-hash-always-have-64-characters
+[10] https://www.entityframeworktutorial.net/efcore/configure-one-to-many-relationship-using-fluent-api-in-ef-core.aspx
+[11] https://www.entityframeworktutorial.net/efcore/configure-many-to-many-relationship-in-ef-core.aspx
+[12] https://learn.microsoft.com/en-us/ef/core/modeling/relationships?tabs=fluent-api%2Cfluent-api-simple-key%2Csimple-key, 01/12/2023.
+[13] Ivan Stoev, https://stackoverflow.com/questions/51281497/fk-constraints-may-cause-cycles-or-multiple-cascade-paths, answered Jul 12, 2018 at 6:31.
+[14] ASP.NET MVC, https://youtu.be/RtwYM1j4HSo, 15 October 2022.
+[15] Lei Zhang-MSFT, https://learn.microsoft.com/en-us/answers/questions/1121531/error-introducing-foreign-key-constraint, Dec 12, 2022.

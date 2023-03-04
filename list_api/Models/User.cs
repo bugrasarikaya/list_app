@@ -8,5 +8,7 @@ namespace list_api.Models {
 		public string Password { get; set; } = null!;
 		public string? RefreshToken { get; set; }
 		public DateTime RefreshTokenExpireDate { get; set; }
+		public ICollection<List>? Lists { get; set; }
+		public Role? Role { get; set; }
 	}
 }

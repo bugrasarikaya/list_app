@@ -7,5 +7,7 @@ namespace list_api.Models {
 		public int IDProduct { get; set; }
 		public int Quantity { get; set; }
 		public double Cost { get; set; }
+		public List? List { get; set; }
+		public Product? Product { get; set; }
 	}
 }

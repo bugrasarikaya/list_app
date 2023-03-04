@@ -11,6 +11,7 @@ using list_api.Repository;
 using list_api.Middlewares;
 using System.Reflection;
 using list_api.Services;
+using list_api.Security;
 namespace list_api {
 	public class Program { // Constructing.
 		public static void Main(string[] args) {
@@ -27,6 +28,7 @@ namespace list_api {
 			builder.Services.AddStackExchangeRedisCache(options => options.Configuration = configuration["RedisCacheUrl"]);
 			builder.Services.Configure<RabbitMQConfiguration>(rabbitmq_configuration => configuration.GetSection(nameof(RabbitMQConfiguration)).Bind(rabbitmq_configuration));
 			builder.Services.AddScoped<IMessageService, RabbitMQService>();
+			builder.Services.AddScoped<IEncryptor, SHA256Encryptor>();
 			builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 			builder.Services.AddFluentValidationAutoValidation();
 			builder.Services.AddFluentValidationClientsideAdapters();
