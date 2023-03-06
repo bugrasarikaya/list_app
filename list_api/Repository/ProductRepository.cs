@@ -16,17 +16,18 @@ namespace list_api.Repository {
 			this.context = context;
 			this.mapper = mapper;
 		}
-		public Product Create(ProductDTO product_dto) { // Creating a product.
+		public ProductViewModel Create(ProductDTO product_dto) { // Creating a product.
 			Product product_created = new Product() { IDCategory = Check.ID<Category>(cache, context, product_dto.IDCategory), Name = Check.NameForConflict<Product>(cache, context, product_dto.Name), Description = product_dto.Description, Price = product_dto.Price };
 			context.Products.Add(product_created);
 			context.SaveChanges();
-			return product_created;
+			return Fill.ViewModel<ProductViewModel, Product>(cache, context, mapper, product_created);
 		}
-		public void Delete(int id) { // Deleting a product.
+		public Product? Delete(int id) { // Deleting a product.
 			Product product_deleted = Supply.ByID<Product>(cache, context, id);
 			Check.ForeignIDForConflict<ListProduct, Product>(cache, context, id);
 			context.Products.Remove(product_deleted);
 			context.SaveChanges();
+			return product_deleted;
 		}
 		public ProductViewModel Get(int id) { // Getting a product.
 			return Fill.ViewModel<ProductViewModel, Product>(cache, context, mapper, Supply.ByID<Product>(cache, context, id));
@@ -36,7 +37,7 @@ namespace list_api.Repository {
 			foreach (int id in Supply.List<Product>(cache, context).OrderBy(p => p.Name).Select(p => p.ID).ToList()) list_product_view_model.Add(Fill.ViewModel<ProductViewModel, Product>(cache, context, mapper, Supply.ByID<Product>(cache, context, id)));
 			return list_product_view_model;
 		}
-		public ICollection<ProductViewModel> List(string param_category) { // Listing all products which have a specific category.
+		public ICollection<ProductViewModel> ListByCategory(string param_category) { // Listing all products which have a specific category.
 			Category category;
 			if (int.TryParse(param_category, out int id_category)) category = Supply.ByID<Category>(cache, context, id_category);
 			else category = Supply.ByName<Category>(cache, context, param_category);
@@ -46,6 +47,7 @@ namespace list_api.Repository {
 		}
 		public ProductViewModel Update(int id, ProductDTO product_dto) { // Updating a product.
 			Product product_updated = Supply.ByID<Product>(cache, context, id);
+			product_updated.IDBrand = Check.ID<Brand>(cache, context, product_dto.IDBrand);
 			product_updated.IDCategory = Check.ID<Category>(cache, context, product_dto.IDCategory);
 			product_updated.Name = Check.NameForConflict<Product>(cache, context, product_dto.Name);
 			product_updated.Description = product_dto.Description;
@@ -55,6 +57,7 @@ namespace list_api.Repository {
 		}
 		public ProductViewModel Patch(int id, ProductPatchDTO product_patch_dto) { // Patching a product.
 			Product product_patched = Supply.ByID<Product>(cache, context, id);
+			if (product_patch_dto.IDBrand != default(int)) product_patched.IDBrand = Check.ID<Brand>(cache, context, product_patch_dto.IDBrand);
 			if (product_patch_dto.IDCategory != default(int)) product_patched.IDCategory = Check.ID<Category>(cache, context, product_patch_dto.IDCategory);
 			if (!string.IsNullOrEmpty(product_patch_dto.Name)) product_patched.Name = Check.NameForConflict<List>(cache, context, product_patch_dto.Name);
 			if (!string.IsNullOrEmpty(product_patch_dto.Description)) product_patched.Description = product_patch_dto.Description;

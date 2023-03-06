@@ -18,10 +18,14 @@ namespace list_api {
 			WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 			ConfigurationManager configuration = builder.Configuration;
 			builder.Services.AddControllers();
+			builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+			builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 			builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+			builder.Services.AddScoped<IClientRepository, ClientRepository>();
 			builder.Services.AddScoped<IListRepository, ListRepository>();
 			builder.Services.AddScoped<IProductRepository, ProductRepository>();
-			builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+			builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+			builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 			builder.Services.AddScoped<IUserRepository, UserRepository>();
 			builder.Services.AddScoped<IListApiDbContext>(provider => provider.GetService<ListApiDbContext>()!);
 			builder.Services.AddDbContext<ListApiDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DbConnection")));
@@ -30,9 +34,9 @@ namespace list_api {
 			builder.Services.AddScoped<IMessageService, RabbitMQService>();
 			builder.Services.AddScoped<IEncryptor, SHA256Encryptor>();
 			builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-			builder.Services.AddFluentValidationAutoValidation();
-			builder.Services.AddFluentValidationClientsideAdapters();
-			builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+			//builder.Services.AddFluentValidationAutoValidation();
+			//builder.Services.AddFluentValidationClientsideAdapters();
+			//builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen(options => {
 				options.SwaggerDoc("v1", new OpenApiInfo() { Title = "list_app_auth", Version = "v1" });

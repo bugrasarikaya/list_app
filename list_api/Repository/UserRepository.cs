@@ -19,19 +19,20 @@ namespace list_api.Repository {
 			this.context = context;
 			this.mapper = mapper;
 		}
-		public User Create(UserDTO user_dto) { // Creating a user.
+		public UserViewModel Create(UserDTO user_dto) { // Creating a user.
 			User user_created = new User() { IDRole = Check.ID<Role>(cache, context, user_dto.IDRole), Name = Check.NameForConflict<User>(cache, context, user_dto.Name), Password = encryptor.Encrpyt(user_dto.Password) };
 			context.Users.Add(user_created);
 			context.SaveChanges();
-			return user_created;
+			return Fill.ViewModel<UserViewModel, User>(cache, context, mapper, user_created);
 		}
-		public void Delete(string param_user) { // Deleting a user.
+		public User? Delete(string param_user) { // Deleting a user.
 			User user_deleted;
 			if (int.TryParse(param_user, out int id_user)) user_deleted = Supply.ByID<User>(cache, context, id_user);
 			else user_deleted = Supply.ByName<User>(cache, context, param_user);
 			Check.ForeignIDForConflict<List, User>(cache, context, user_deleted.ID);
 			context.Users.Remove(user_deleted);
 			context.SaveChanges();
+			return user_deleted;
 		}
 		public UserViewModel Get(string param_user) { // Getting a user.
 			User user;

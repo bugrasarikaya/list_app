@@ -19,18 +19,20 @@ namespace list_api.Repository {
 			this.mapper = mapper;
 			this.messager = messager;
 		}
-		public List Create(ListDTO list_dto) { // Creating a list.
+		public ListViewModel Create(ListDTO list_dto) { // Creating a list.
 			List list_created = new List() { IDCategory = Check.ID<Category>(cache, context, list_dto.IDCategory), IDStatus = Supply.ByID<Status>(cache, context, (int)Enumerator.Status.Uncompleted).ID, Name = Check.NameForConflict<List>(cache, context, list_dto.Name, list_dto.IDUser), IDUser = Check.ID<User>(cache, context, list_dto.IDUser), Description = list_dto.Description, DateTimeCreating = DateTime.Now };
 			list_created.DateTimeUpdating = list_created.DateTimeCreating;
 			context.Lists.Add(list_created);
 			context.SaveChanges();
-			return list_created;
+			return Fill.ViewModel<ListViewModel, List>(cache, context, mapper, list_created);
 		}
-		public void Delete(int id_list) { // Deleting a list.
+		public List? Delete(int id_list) { // Deleting a list.
 			List list_deleted = Supply.ByID<List>(cache, context, id_list);
 			Check.Status(cache, context, list_deleted);
+			context.ListProducts.RemoveRange(Supply.List<ListProduct>(cache, context).Where(lp => lp.IDList == list_deleted.ID));
 			context.Lists.Remove(list_deleted);
 			context.SaveChanges();
+			return list_deleted;
 		}
 		public ListViewModel Get(int id_list) { // Getting a list.
 			return Fill.ViewModel<ListViewModel, List>(cache, context, mapper, Supply.ByID<List>(cache, context, id_list));

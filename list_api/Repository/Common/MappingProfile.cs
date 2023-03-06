@@ -9,6 +9,7 @@ namespace list_api.Repository.Common {
 			CreateMap<List, ListViewModel>();
 			CreateMap<ListProduct, ProductViewModel>().ForSourceMember(lp => lp.ID, opt => opt.DoNotValidate());
 			CreateMap<Product, ProductViewModel>();
+			CreateMap<ProductViewModel, ListProductViewModel>();
 			CreateMap<Role, RoleViewModel>();
 			CreateMap<Status, StatusViewModel>();
 			CreateMap<User, ClientUserViewModel>();

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using list_api.Common;
-using list_api.Models;
 using list_api.Models.DTOs;
 using list_api.Repository.Interface;
+using list_api.Models.Validators;
+using list_api.Models.ViewModels;
 namespace list_api.Controllers {
 	[ApiController]
 	[Authorize(Roles = "Admin")]
@@ -16,22 +18,23 @@ namespace list_api.Controllers {
 		}
 		[HttpPost]
 		public IActionResult Create([FromBody] StatusDTO status_dto) { // Responding with a created status after creating.
-			if (ModelState.IsValid) {
-				Status status_created = status_repository.Create(status_dto);
-				return Created(new Uri(Request.GetEncodedUrl() + "/" + status_created.ID), status_created);
-			} else return BadRequest(ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage));
+			ValidationResult dto_validation_result = new StatusDTOValidator().Validate(status_dto);
+			if (dto_validation_result.IsValid) {
+				StatusViewModel status_view_model_created = status_repository.Create(status_dto);
+				return Created(new Uri(Request.GetEncodedUrl() + "/" + status_view_model_created.ID), status_view_model_created);
+			} else return BadRequest(dto_validation_result.Errors.Select(e => e.ErrorMessage));
 		}
 		[HttpDelete("{param_status}")]
 		public IActionResult Delete(string param_status) { // Responding with no content after deleting.
-			Validator param_status_validator = new Validator(param_status);
+			ParamValidator param_status_validator = new ParamValidator(param_status);
 			if (param_status_validator.Validate()) {
-				status_repository.Delete(param_status);
-				return NoContent();
+				if (status_repository.Delete(param_status) == null) return NoContent();
+				return NotFound();
 			} else return BadRequest(param_status_validator.ListMessage);
 		}
 		[HttpGet("{param_status}")]
 		public IActionResult Get(string param_status) { // Responding with a status after getting.
-			Validator param_status_validator = new Validator(param_status);
+			ParamValidator param_status_validator = new ParamValidator(param_status);
 			if (param_status_validator.Validate()) return Ok(status_repository.Get(param_status));
 			else return BadRequest(param_status_validator.ListMessage);
 		}
@@ -41,15 +44,17 @@ namespace list_api.Controllers {
 		}
 		[HttpPut("{param_status}")]
 		public IActionResult Update(string param_status, [FromBody] StatusDTO status_dto) { // Responding with an updated status after updating.
-			Validator param_status_validator = new Validator(param_status);
-			if (param_status_validator.Validate() || ModelState.IsValid) return Ok(status_repository.Update(param_status, status_dto));
-			else return BadRequest(param_status_validator.ListMessage.Concat(ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
+			ParamValidator param_status_validator = new ParamValidator(param_status);
+			ValidationResult dto_validation_result = new StatusDTOValidator().Validate(status_dto);
+			if (param_status_validator.Validate() || dto_validation_result.IsValid) return Ok(status_repository.Update(param_status, status_dto));
+			else return BadRequest(param_status_validator.ListMessage.Concat(dto_validation_result.Errors.Select(e => e.ErrorMessage)));
 		}
 		[HttpPatch("{param_status}")]
 		public IActionResult Patch(string param_status, [FromBody] StatusPatchDTO status_patch_dto) { // Responding with a patched status after patching.
-			Validator param_status_validator = new Validator(param_status);
-			if (param_status_validator.Validate() || ModelState.IsValid) return Ok(status_repository.Patch(param_status, status_patch_dto));
-			else return BadRequest(param_status_validator.ListMessage.Concat(ModelState.Values.SelectMany(mse => mse.Errors).Select(me => me.ErrorMessage)));
+			ParamValidator param_status_validator = new ParamValidator(param_status);
+			ValidationResult dto_validation_result = new StatusPatchDTOValidator().Validate(status_patch_dto);
+			if (param_status_validator.Validate() || dto_validation_result.IsValid) return Ok(status_repository.Patch(param_status, status_patch_dto));
+			else return BadRequest(param_status_validator.ListMessage.Concat(dto_validation_result.Errors.Select(e => e.ErrorMessage)));
 		}
 	}
 }

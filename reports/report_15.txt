@@ -1,0 +1,59 @@
+Two webpages [1] [2] about naming unit tests, were examined briefly.
+A video [3] about using in memory database for unit testing, was watched.
+After examining research [4] [5] [6] results and a video [7], it was understood that in-memory database can be used for testing but it cannot support all SQL features, for example referantial integrity.
+On a webpage [8], explanation about referential integrity, were read.
+An xUnit Test Project whose name is "xUnitTests", was created.
+An attempt was started to write unit test codes by benefiting examined webpages [3] [7] and developed projects.
+An online SHA-256 encryptor webpage [11] was used to encrypt usernames as password.
+Product and brand information was filled by examining online shopping web sites.
+"Cost" property was removed because it was witnessed that it was never used and "TotalCost" property was renamed as "Cost".
+It was noticed that previous "Cost" property was used in mapping but its assignment was forgotten and it was fixed by reverting to previous state of the change and adding an assignment.
+After noticing mistakes inon view model filler class, "Cost" property was removed from product view model and another view model for list product, was created.
+Process of data feeding for unit test, was completed.
+It was realized that there is not any rules for adding a product which has a different category, into a list.
+In a webpage [12], a code was used for getting distrubuted cache configuration for testing.
+"NUnit" NuGet package which is found in watched videos [3] [7], was unistalled because it could not be used properly.
+While running written unit tests, unnoticed missings were fixed.
+While testing controller, it was observerd that string paramater of "BadRequest", is not returned on error message.
+It was observed that error message of model state validator which uses assembly, surpass custom validator message.
+To fix this problem, auto validation of model statate validator, was removed on "Program.cs" and validator was executed manually inside controller action by benefiting previous developed project [13] and a webpage [14].
+Instead of returning model object after creating, view model was returned because it was observed that unused realitionship property was retrieved on HTTP response body.
+Return type of delete operations was changed to class type for checking null status of deleted record.
+All controller and repositories were updated again to validate manually.
+All Fluent Validation configurations were commented in "Program.cs".
+To write a string whose length is more than 100 and 200 characters, an online random string generator [15] was used.
+Deleting tests worked individually but they did not work together and to solve this a new created record was deleted.
+Previous resolution for testing together, did not work and resolution was removed.
+By examining two webpages [16] [17], Fluent Validaiton was used with conditions.
+All validator unit tests written.
+Detected "Newtonsoft.Json.JsonSerializationException: 'Self referencing loop detected for property" error was fixed by ignoring reference looping in Redis cache class by benefiting a webpage [18] but it was observed that still Redis Cache was not working properly.
+Redis cache error was delayed.
+Missing deleting process of related list product table records, was noticed in deleting list operations and it was fixed.
+Some Fluent Assertion examples were examined on a webpage.
+An onnline GUID generator [20] was found.
+Another GUID regex [21] was found in webpage and it was used.
+Most of all methods, unit tests were written.
+By benefiting two sources [22] [23], an integration test was written but then they failed.
+[1] https://stackoverflow.com/questions/155436/unit-test-naming-best-practices
+[2] https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices, 11/04/2022.
+[3] Ervis Trupja, https://youtu.be/sFgYcIb9rrg, 9 April 2021.
+[4] https://stackoverflow.com/questions/483021/in-memory-dbmss-for-unit-testing
+[5] https://www.reddit.com/r/dotnet/comments/ov9f15/seeking_advice_should_i_use_in_memory_database_to/
+[6] https://learn.microsoft.com/en-us/ef/core/providers/in-memory/?tabs=dotnet-core-cli, 02/18/2023.
+[7] Alex Will, https://youtu.be/AXu_5UBG2Qk, 12 February 2019.
+[8] https://eksisozluk.com/referential-integrity--641431
+[9] bugrasarikaya, https://github.com/bugrasarikaya/patika_tasks/tree/main/net_core/task_6, 18 Feb 2023.
+[10] bugrasarikaya, https://github.com/bugrasarikaya/patika_tasks/tree/main/net_core/task_7/xUnitTests, 19 Feb 2023.
+[11] https://www.movable-type.co.uk/scripts/sha256.html
+[12] z zandi, pat8719, https://stackoverflow.com/questions/52335487/unit-test-and-idistributedcache-using-azure-redis, answered Feb 19 at 11:14, edited Feb 27 at 13:52.
+[13] bugrasarikaya, https://github.com/bugrasarikaya/patika_tasks/tree/main/net_core/task_7/game_store, 19 Feb 2023.
+[14] Ashish Patel, https://medium.com/dotnet-hub/use-fluentvalidation-in-asp-net-or-asp-net-core-d0b891e5e87b, Jul 7, 2021.
+[15] http://www.unit-conversion.info/texttools/random-string-generator/
+[16] https://docs.fluentvalidation.net/en/latest/conditions.html
+[17] rgvlee, https://stackoverflow.com/questions/67163110/how-to-do-conditional-validation-with-fluentvalidation, Apr 20, 2021 at 11:58.
+[18] Muhammad Omar ElShourbagy, https://stackoverflow.com/questions/13510204/json-net-self-referencing-loop-detected, May 24, 2017 at 5:52.
+[19] https://fluentassertions.com/tips/
+[20] https://guidgenerator.com/online-guid-generator.aspx
+[21] Picrofo Software, Community (Bot), https://stackoverflow.com/questions/13190436/find-matching-guid-in-string, answered Nov 2, 2012 at 6:45, edited Apr 10, 2020 at 16:03.
+[22] CANER, http://www.canertosuner.com/post/asp-net-core-integration-test-nedir-nasil-yazilir1, DEC 19, 2018.
+[23] Jos van der Til, Martin Costello, Javier Calvarro Nelson, ttps://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-7.0, 02/16/2023.

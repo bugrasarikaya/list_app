@@ -17,6 +17,10 @@ namespace list_api.Repository.Common {
 				List? list = List<List>(cache, context).SingleOrDefault(l => l.ID == id_1);
 				if (list != null) return (T)Convert.ChangeType(list, typeof(T));
 				else throw new NotFoundException("List could not be found.");
+			} else if (typeof(T) == typeof(List) && id_2 != 0) {
+				List? list = List<List>(cache, context).SingleOrDefault(l => l.ID == id_1 && l.IDUser == id_2);
+				if (list != null) return (T)Convert.ChangeType(list, typeof(T));
+				else throw new NotFoundException("List could not be found.");
 			} else if (typeof(T) == typeof(ListProduct)) {
 				ListProduct? list_product = List<ListProduct>(cache, context).SingleOrDefault(l => l.IDList == id_1 && l.IDProduct == id_2);
 				if (list_product != null) return (T)Convert.ChangeType(list_product, typeof(T));

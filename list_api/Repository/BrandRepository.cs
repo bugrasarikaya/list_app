@@ -16,19 +16,20 @@ namespace list_api.Repository {
 			this.context = context;
 			this.mapper = mapper;
 		}
-		public Brand Create(BrandDTO brand_dto) { // Creating a brand.
+		public BrandViewModel Create(BrandDTO brand_dto) { // Creating a brand.
 			Brand brand_created = new Brand() { Name = Check.NameForConflict<Brand>(cache, context, brand_dto.Name) };
 			context.Brands.Add(brand_created);
 			context.SaveChanges();
-			return brand_created;
+			return Fill.ViewModel<BrandViewModel, Brand>(cache, context, mapper, brand_created);
 		}
-		public void Delete(string param_brand) { // Deleting a brand.
+		public Brand? Delete(string param_brand) { // Deleting a brand.
 			Brand brand_deleted;
 			if (int.TryParse(param_brand, out int id_brand)) brand_deleted = Supply.ByID<Brand>(cache, context, id_brand);
 			else brand_deleted = Supply.ByName<Brand>(cache, context, param_brand);
 			Check.ForeignIDForConflict<Product, Brand>(cache, context, brand_deleted.ID);
 			context.Brands.Remove(brand_deleted);
 			context.SaveChanges();
+			return brand_deleted;
 		}
 		public BrandViewModel Get(string param_brand) { // Getting a brand.
 			Brand brand;

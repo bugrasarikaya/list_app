@@ -229,7 +229,6 @@ namespace list_api.Migrations
                         .HasColumnType("varchar");
 
                     b.Property<string>("RefreshToken")
-                        .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("varchar");
 

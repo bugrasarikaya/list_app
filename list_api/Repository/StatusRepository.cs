@@ -16,14 +16,14 @@ namespace list_api.Repository {
 			this.context = context;
 			this.mapper = mapper;
 		}
-		public Status Create(StatusDTO status_dto) { // Creating a status.
+		public StatusViewModel Create(StatusDTO status_dto) { // Creating a status.
 			Status status_created = new Status() { Name = Check.NameForConflict<Status>(cache, context, status_dto.Name) };
 			context.Statuses.Add(status_created);
 			context.SaveChanges();
 			RedisCache.Recache<Status>(cache, context);
-			return status_created;
+			return Fill.ViewModel<StatusViewModel, Status>(cache, context, mapper, status_created);
 		}
-		public void Delete(string param_status) { // Deleting a status.
+		public Status? Delete(string param_status) { // Deleting a status.
 			Status status_deleted;
 			if (int.TryParse(param_status, out int id_status)) status_deleted = Supply.ByID<Status>(cache, context, id_status);
 			else status_deleted = Supply.ByName<Status>(cache, context, param_status);
@@ -31,6 +31,7 @@ namespace list_api.Repository {
 			context.Statuses.Remove(status_deleted);
 			context.SaveChanges();
 			RedisCache.Recache<Status>(cache, context);
+			return status_deleted;
 		}
 		public StatusViewModel Get(string param_status) { // Getting a status.
 			Status status;

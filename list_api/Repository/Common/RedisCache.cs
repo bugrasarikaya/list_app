@@ -11,7 +11,10 @@ namespace list_api.Repository.Common {
 			if (typeof(T) == typeof(List<Category>)) value = (T)Convert.ChangeType(context.Categories.ToList(), typeof(T));
 			else if (typeof(T) == typeof(List<Role>)) value = (T)Convert.ChangeType(context.Roles.ToList(), typeof(T));
 			else value = (T)Convert.ChangeType(context.Statuses.ToList(), typeof(T));
-			cache.Set(cache_key, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(value)), new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromDays(1)).SetAbsoluteExpiration(DateTime.Now.AddMonths(1)));
+			cache.Set(cache_key, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(value, Formatting.None,
+						new JsonSerializerSettings() {
+							ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+						})), new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromDays(1)).SetAbsoluteExpiration(DateTime.Now.AddMonths(1)));
 			return value;
 		}
 		public static void Remove<T>(IDistributedCache cache) { // Removing a key with value from cache.

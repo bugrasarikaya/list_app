@@ -16,14 +16,14 @@ namespace list_api.Repository {
 			this.context = context;
 			this.mapper = mapper;
 		}
-		public Role Create(RoleDTO role_dto) { // Creating a role.
+		public RoleViewModel Create(RoleDTO role_dto) { // Creating a role.
 			Role role_created = new Role() { Name = Check.NameForConflict<Role>(cache, context, role_dto.Name) };
 			context.Roles.Add(role_created);
 			context.SaveChanges();
 			RedisCache.Recache<Role>(cache, context);
-			return role_created;
+			return Fill.ViewModel<RoleViewModel, Role>(cache, context, mapper, role_created);
 		}
-		public void Delete(string param_role) { // Deleting a role.
+		public Role? Delete(string param_role) { // Deleting a role.
 			Role role_deleted;
 			if (int.TryParse(param_role, out int id_role)) role_deleted = Supply.ByID<Role>(cache, context, id_role);
 			else role_deleted = Supply.ByName<Role>(cache, context, param_role);
@@ -31,6 +31,7 @@ namespace list_api.Repository {
 			context.Roles.Remove(role_deleted);
 			context.SaveChanges();
 			RedisCache.Recache<Role>(cache, context);
+			return role_deleted;
 		}
 		public RoleViewModel Get(string param_role) { // Getting a role.
 			Role role;

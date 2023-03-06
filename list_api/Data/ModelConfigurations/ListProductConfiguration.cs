@@ -9,6 +9,7 @@ namespace list_api.Data.ModelConfigurations {
 			builder.Property(lp => lp.IDList).IsRequired(true).HasColumnType("int");
 			builder.Property(lp => lp.IDProduct).IsRequired(true).HasColumnType("int");
 			builder.Property(lp => lp.Quantity).IsRequired(true).HasColumnType("int");
+			builder.Property(lp => lp.Cost).IsRequired(true).HasColumnType("float");
 		}
 	}
 }

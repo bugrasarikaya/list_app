@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using list_api.Models;
 using list_api.Data.ModelConfigurations;
-using System.Reflection.Emit;
 namespace list_api.Data {
 	public class ListApiDbContext : DbContext, IListApiDbContext {
 		public DbSet<Brand> Brands { get; set; }
@@ -13,7 +12,7 @@ namespace list_api.Data {
 		public DbSet<Status> Statuses { get; set; }
 		public DbSet<User> Users { get; set; }
 		public ListApiDbContext(DbContextOptions<ListApiDbContext> options) : base(options) { } // Constructing.
-		protected override void OnModelCreating(ModelBuilder model_builder) {
+		protected override void OnModelCreating(ModelBuilder model_builder) { // Configuring tables.
 			model_builder.ApplyConfiguration(new BrandConfiguration());
 			model_builder.ApplyConfiguration(new CategoryConfiguration());
 			model_builder.ApplyConfiguration(new ListConfiguration());

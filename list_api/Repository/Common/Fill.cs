@@ -3,9 +3,11 @@ using list_api.Data;
 using list_api.Models;
 using list_api.Models.ViewModels;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Hosting;
+
 namespace list_api.Repository.Common {
 	public static class Fill {
-		public static T1 ViewModel<T1, T2>(IDistributedCache cache, IListApiDbContext context, IMapper mapper, T2 record) {
+		public static T1 ViewModel<T1, T2>(IDistributedCache cache, IListApiDbContext context, IMapper mapper, T2 record) { // Filling view model.
 			if (typeof(T1) == typeof(BrandViewModel) && typeof(T2) == typeof(Brand)) {
 				Brand brand = (Brand)Convert.ChangeType(record, typeof(Brand))!;
 				BrandViewModel brand_view_model = mapper.Map<BrandViewModel>(brand);
@@ -22,8 +24,12 @@ namespace list_api.Repository.Common {
 				List list = (List)Convert.ChangeType(record, typeof(List))!;
 				ListViewModel list_view_model = mapper.Map<ListViewModel>(list);
 				list_view_model.Category = Supply.ByID<Category>(cache, context, list.IDCategory);
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<Product>(cache, context).Where(p => Supply.List<ListProduct>(cache, context).Any(lp => lp.IDProduct == p.ID)).ToList());
-				list_view_model.Products = mapper.Map<List<ProductViewModel>>(Supply.List<ListProduct>(cache, context).Where(lp => Supply.List<Product>(cache, context).Any(p => p.ID == lp.IDProduct)).ToList());
+				List<Product> list_product = Supply.List<Product>(cache, context).Where(p => Supply.List<ListProduct>(cache, context).Any(lp => lp.IDList == list_view_model.ID && lp.IDProduct == p.ID)).ToList();
+				list_view_model.ListProducts = mapper.Map<List<ListProductViewModel>>(mapper.Map<List<ProductViewModel>>(list_product));
+				foreach (ListProduct lispProduct in Supply.List<ListProduct>(cache, context).Where(lp => lp.IDList == list_view_model.ID)) {
+					list_view_model.ListProducts.SingleOrDefault(lpv => lpv.ID == lispProduct.ID)!.Quantity = lispProduct.Quantity;
+					list_view_model.TotalCost += lispProduct.Cost;
+				}
 				list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(cache, context, list.IDUser));
 				return (T1)Convert.ChangeType(list_view_model, typeof(T1));
 			} else if (typeof(T1) == typeof(ProductViewModel) && typeof(T2) == typeof(Product)) {

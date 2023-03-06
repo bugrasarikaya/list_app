@@ -3,8 +3,8 @@ using list_api.Models.DTOs;
 using list_api.Models.ViewModels;
 namespace list_api.Repository.Interface {
 	public interface IListRepository {
-		public List Create(ListDTO list_dto);
-		public void Delete(int id);
+		public ListViewModel Create(ListDTO list_dto);
+		public List? Delete(int id);
 		public ListViewModel Get(int id);
 		public ICollection<ListViewModel> List();
 		public ICollection<ListViewModel> ListByCategory(string param_category);

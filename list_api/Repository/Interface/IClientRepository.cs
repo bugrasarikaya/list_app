@@ -4,8 +4,8 @@ using list_api.Models.ViewModels;
 namespace list_api.Repository.Interface {
 	public interface IClientRepository {
 		public int IDUser { get; set; }
-		public List CreateList(ClientListDTO list_client_dto);
-		public void DeleteList(string param_list);
+		public ListViewModel CreateList(ClientListDTO list_client_dto);
+		public List? DeleteList(string param_list);
 		public ListViewModel GetList(string param_list);
 		public ICollection<ListViewModel> ListLists();
 		public ICollection<ListViewModel> ListListsByCategory(string param_category);

@@ -20,20 +20,22 @@ namespace list_api.Repository {
 			this.mapper = mapper;
 			this.messager = messager;
 		}
-		public List CreateList(ClientListDTO list_client_dto) { // Creating a list of client.
+		public ListViewModel CreateList(ClientListDTO list_client_dto) { // Creating a list of client.
 			List list_created = new List() { IDCategory = Check.ID<Category>(cache, context, list_client_dto.IDCategory), IDStatus = Supply.ByID<Status>(cache, context, (int)Enumerator.Status.Uncompleted).ID, IDUser = Check.ID<User>(cache, context, IDUser), Name = Check.NameForConflict<List>(cache, context, list_client_dto.Name, IDUser), Description = list_client_dto.Description, DateTimeCreating = DateTime.Now };
 			list_created.DateTimeUpdating = list_created.DateTimeCreating;
 			context.Lists.Add(list_created);
 			context.SaveChanges();
-			return list_created;
+			return Fill.ViewModel<ListViewModel, List>(cache, context, mapper, list_created);
 		}
-		public void DeleteList(string param_list) { // Deleting a list of client.
+		public List? DeleteList(string param_list) { // Deleting a list of client.
 			List list_deleted;
 			if (int.TryParse(param_list, out int id_list)) list_deleted = Supply.ByID<List>(cache, context, id_list);
 			else list_deleted = Supply.ByName<List>(cache, context, param_list, IDUser);
 			Check.Status(cache, context, list_deleted);
+			context.ListProducts.RemoveRange(Supply.List<ListProduct>(cache, context).Where(lp => lp.IDList == list_deleted.ID));
 			context.Lists.Remove(list_deleted);
 			context.SaveChanges();
+			return list_deleted;
 		}
 		public ListViewModel GetList(string param_list) { // Getting a list of client.
 			List list;
@@ -121,7 +123,7 @@ namespace list_api.Repository {
 			return list_view_model;
 		}
 		public ListViewModel AddProduct(ListProductDTO list_product_dto) { // Adding a product to a list of client.
-			List list = Supply.ByID<List>(cache, context, list_product_dto.IDList);
+			List list = Supply.ByID<List>(cache, context, list_product_dto.IDList, IDUser);
 			Check.Status(cache, context, list);
 			Product product = Supply.ByID<Product>(cache, context, list_product_dto.IDProduct);
 			ListProduct list_product_created = new ListProduct() { IDList = list_product_dto.IDList, IDProduct = list_product_dto.IDProduct, Quantity = list_product_dto.Quantity };

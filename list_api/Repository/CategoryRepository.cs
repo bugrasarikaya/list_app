@@ -16,14 +16,14 @@ namespace list_api.Repository {
 			this.context = context;
 			this.mapper = mapper;
 		}
-		public Category Create(CategoryDTO category_dto) { // Creating a category.
+		public CategoryViewModel Create(CategoryDTO category_dto) { // Creating a category.
 			Category category_created = new Category() { Name = Check.NameForConflict<Category>(cache, context, category_dto.Name) };
 			context.Categories.Add(category_created);
 			context.SaveChanges();
 			RedisCache.Recache<Category>(cache, context);
-			return category_created;
+			return Fill.ViewModel<CategoryViewModel, Category>(cache, context, mapper, category_created);
 		}
-		public void Delete(string param_category) { // Deleting a category.
+		public Category? Delete(string param_category) { // Deleting a category.
 			Category category_deleted;
 			if (int.TryParse(param_category, out int id_category)) category_deleted = Supply.ByID<Category>(cache, context, id_category);
 			else category_deleted = Supply.ByName<Category>(cache, context, param_category);
@@ -32,6 +32,7 @@ namespace list_api.Repository {
 			context.Categories.Remove(category_deleted);
 			context.SaveChanges();
 			RedisCache.Recache<Category>(cache, context);
+			return category_deleted;
 		}
 		public CategoryViewModel Get(string param_category) { // Getting a category.
 			Category category;

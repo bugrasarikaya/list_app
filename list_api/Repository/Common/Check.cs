@@ -85,7 +85,7 @@ namespace list_api.Repository.Common {
 			} else if (typeof(T1) == typeof(List) && typeof(T2) == typeof(User)) {
 				if (Supply.List<List>(cache, context).Any(l => l.IDUser == id_1)) throw new ConflictException("User exists in a list.");
 			} else if (typeof(T1) == typeof(ListProduct) && typeof(T2) == typeof(ListProduct)) {
-				if (Supply.List<ListProduct>(cache, context).Any(lp => lp.IDList == id_1 && lp.IDProduct == id_2)) throw new ConflictException("Product already exists in a list.");
+				if (Supply.List<ListProduct>(cache, context).Any(lp => lp.IDList == id_1 && lp.IDProduct == id_2)) throw new ConflictException("Product already exists in list.");
 			} else if (typeof(T1) == typeof(ListProduct) && typeof(T2) == typeof(Product)) {
 				if (Supply.List<ListProduct>(cache, context).Any(lp => lp.IDProduct == id_1)) throw new ConflictException("Product exists in a list.");
 			} else if (typeof(T1) == typeof(Product) && typeof(T2) == typeof(Brand)) {
