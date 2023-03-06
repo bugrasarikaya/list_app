@@ -10,7 +10,7 @@ namespace list_api.Data.ModelConfigurations {
 			builder.Property(u => u.Name).IsRequired(true).HasMaxLength(100).HasColumnType("varchar");
 			builder.Property(u => u.Password).IsRequired(true).HasMaxLength(64).HasColumnType("varchar");
 			builder.Property(u => u.RefreshToken).HasMaxLength(36).HasColumnType("varchar");
-			builder.Property(u => u.RefreshTokenExpireDate).IsRequired(true).HasColumnType("datetime");
+			builder.Property(u => u.RefreshTokenExpireDate).HasColumnType("datetime");
 		}
 	}
 }

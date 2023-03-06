@@ -22,7 +22,7 @@ namespace xUnitTests.TestSetups {
 			Cache = new MemoryDistributedCache(Options.Create(new MemoryDistributedCacheOptions()));
 			Encryptor = new SHA256Encryptor();
 			Mapper = new MapperConfiguration(cfg => { cfg.AddProfile<MappingProfile>(); }).CreateMapper();
-			Messager = new RabbitMQService(Options.Create(new RabbitMQConfiguration()));
+			Messager = new RabbitMQService(Options.Create(new RabbitMQConfiguration() { HostName = "localhost", Username = "guest", Password ="guest", QueueName = "test_lists_completed" }));
 			Feed.Database(Context);
 		}
 	}

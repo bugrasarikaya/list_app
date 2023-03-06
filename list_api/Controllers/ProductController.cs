@@ -32,19 +32,19 @@ namespace list_api.Controllers {
 				else return NotFound();
 			} else return BadRequest(id_validator.ListMessage);
 		}
-		[Authorize(Roles = "Admin, User")]
+		[AllowAnonymous]
 		[HttpGet("{id:int}")]
 		public IActionResult Get(int id) { // Responding with a product after getting.
 			ParamValidator id_validator = new ParamValidator(id);
 			if (id_validator.Validate()) return Ok(product_repository.Get(id));
 			else return BadRequest(id_validator.ListMessage);
 		}
-		[Authorize(Roles = "Admin, User")]
+		[AllowAnonymous]
 		[HttpGet]
 		public IActionResult List() { // Responding with product list.
 			return Ok(product_repository.List());
 		}
-		[Authorize(Roles = "Admin, User")]
+		[AllowAnonymous]
 		[HttpGet("{param_category}")]
 		public IActionResult List(string param_category) { // Listing all products which have a specific category.
 			ParamValidator param_category_validator = new ParamValidator(param_category);

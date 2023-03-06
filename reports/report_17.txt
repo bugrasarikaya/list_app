@@ -1,0 +1,8 @@
+Missing cost value of list product data feed, was filled.
+It was observed that somehow "RefreshTokenExpireDate" column was not set as nullable on SQL server and it was changed on SSMS.
+In-memory data in testings, was inserted to databas on SSMS and its backup was exported as "la_db.bacpac" file.
+A security key problem was fixed by benefiting a webpage [1].
+An error was detected while retrieving claim info and it was fixed by moving  retrieving claim code from constructor to actions.
+Project was published but it was guessed that there are a lot of unforeseen bugs because all operations could not be tested.
+Database diagram image was added
+[1] https://stackoverflow.com/questions/47279947/idx10603-the-algorithm-hs256-requires-the-securitykey-keysize-to-be-greater

@@ -9,9 +9,9 @@ namespace xUnitTests.Data {
 				new Brand { ID = 3, Name = "Filiz" },
 				new Brand { ID = 4, Name = "Loft" },
 				new Brand { ID = 5, Name = "Nescafe" },
-				new Brand { ID = 7, Name = "Domestos" },
-				new Brand { ID = 8, Name = "Tchibo" },
-				new Brand { ID = 9, Name = "Cappy" }
+				new Brand { ID = 6, Name = "Domestos" },
+				new Brand { ID = 7, Name = "Tchibo" },
+				new Brand { ID = 8, Name = "Cappy" }
 			);
 		}
 	}

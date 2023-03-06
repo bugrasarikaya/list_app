@@ -4,7 +4,6 @@ using list_api.Models;
 using list_api.Models.ViewModels;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Hosting;
-
 namespace list_api.Repository.Common {
 	public static class Fill {
 		public static T1 ViewModel<T1, T2>(IDistributedCache cache, IListApiDbContext context, IMapper mapper, T2 record) { // Filling view model.
@@ -23,14 +22,23 @@ namespace list_api.Repository.Common {
 			} else if (typeof(T1) == typeof(ListViewModel) && typeof(T2) == typeof(List)) {
 				List list = (List)Convert.ChangeType(record, typeof(List))!;
 				ListViewModel list_view_model = mapper.Map<ListViewModel>(list);
-				list_view_model.Category = Supply.ByID<Category>(cache, context, list.IDCategory);
-				List<Product> list_product = Supply.List<Product>(cache, context).Where(p => Supply.List<ListProduct>(cache, context).Any(lp => lp.IDList == list_view_model.ID && lp.IDProduct == p.ID)).ToList();
-				list_view_model.ListProducts = mapper.Map<List<ListProductViewModel>>(mapper.Map<List<ProductViewModel>>(list_product));
+				list_view_model.ListViewModels = new List<ListProductViewModel>();
+				list_view_model.NameCategory = Supply.ByID<Category>(cache, context, list.IDCategory).Name;
+				list_view_model.NameUser = Supply.ByID<User>(cache, context, list.IDUser).Name;
+				list_view_model.NameStatus = Supply.ByID<Status>(cache, context, list.IDStatus).Name;
+				list_view_model.ListViewModels = new List<ListProductViewModel>();
 				foreach (ListProduct lispProduct in Supply.List<ListProduct>(cache, context).Where(lp => lp.IDList == list_view_model.ID)) {
-					list_view_model.ListProducts.SingleOrDefault(lpv => lpv.ID == lispProduct.ID)!.Quantity = lispProduct.Quantity;
-					list_view_model.TotalCost += lispProduct.Cost;
+					ListProductViewModel ListProductViewModel = new ListProductViewModel();
+					ListProductViewModel.ID = lispProduct.IDProduct;
+					ListProductViewModel.Name = Supply.ByID<Product>(cache, context, lispProduct.IDProduct).Name;
+					ListProductViewModel.NameBrand = Supply.ByID<Brand>(cache, context, Supply.ByID<Product>(cache, context, lispProduct.IDProduct).IDBrand).Name;
+					ListProductViewModel.NameCategory = Supply.ByID<Category>(cache, context, Supply.ByID<Product>(cache, context, lispProduct.IDProduct).IDCategory).Name;
+					ListProductViewModel.Description = Supply.ByID<Product>(cache, context, lispProduct.IDProduct).Description;
+					ListProductViewModel.Price = Supply.ByID<Product>(cache, context, lispProduct.IDProduct).Price;
+					ListProductViewModel.Quantity = lispProduct.Quantity;
+					ListProductViewModel.Cost = lispProduct.Cost;
+					list_view_model.ListViewModels.Add(ListProductViewModel);
 				}
-				list_view_model.User = mapper.Map<ClientUserViewModel>(Supply.ByID<User>(cache, context, list.IDUser));
 				return (T1)Convert.ChangeType(list_view_model, typeof(T1));
 			} else if (typeof(T1) == typeof(ProductViewModel) && typeof(T2) == typeof(Product)) {
 				Product product = (Product)Convert.ChangeType(record, typeof(Product))!;

@@ -1,8 +1,6 @@
 ﻿namespace list_api.Models.ViewModels {
 	public class ListProductViewModel {
 		public int ID { get; set; }
-		public int IDBrand { get; set; }
-		public int IDCategory { get; set; }
 		public string Name { get; set; } = null!;
 		public string NameBrand { get; set; } = null!;
 		public string NameCategory { get; set; } = null!;
